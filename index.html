@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Einbürgerungstest — Staatsbürgerkunde</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#1a1a1a;--paper:#f4f1e8;--paper-2:#eae5d6;
+  --gold:#c8a94e;--gold-deep:#9a7d2e;
+  --red:#b5231f;--charcoal:#2b2b2b;
+  --line:rgba(26,26,26,.14);--line-strong:rgba(26,26,26,.28);
+  --muted:#6b6456;--muted-2:#8a8375;
+  --green:#2f6b3f;--green-bg:rgba(47,107,63,.1);
+  --red-bg:rgba(181,35,31,.08);
+}
+body{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;background:var(--paper);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
+.bg-seal{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.035;background-image:radial-gradient(circle at 50% 42%,var(--ink) 0 1px,transparent 1px);background-size:22px 22px}
+.wrap{max-width:640px;margin:0 auto;padding:2.5rem 1.25rem 4rem;position:relative;z-index:1}
+
+/* Header */
+.header{text-align:center;margin-bottom:2.5rem;padding-bottom:1.75rem;border-bottom:1px solid var(--line)}
+.flag{display:flex;justify-content:center;gap:0;margin:0 auto 1.25rem;width:64px;height:8px;border-radius:1px;overflow:hidden;box-shadow:0 1px 0 rgba(0,0,0,.15)}
+.flag i{flex:1}.flag .k{background:#111}.flag .r{background:var(--red)}.flag .g{background:var(--gold)}
+.eyebrow{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.62rem;font-weight:600;letter-spacing:.32em;color:var(--muted);text-transform:uppercase;margin-bottom:.6rem}
+h1{font-size:clamp(1.7rem,5vw,2.3rem);font-weight:600;color:var(--ink);letter-spacing:-.01em;line-height:1.05}
+.sub{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.68rem;letter-spacing:.18em;color:var(--muted-2);text-transform:uppercase;margin-top:.65rem}
+
+/* Language toggle */
+.lang-row{display:flex;align-items:center;gap:.6rem;justify-content:center;margin-bottom:1.75rem}
+.lang-row span{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.66rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase}
+.tog-wrap{position:relative;width:42px;height:23px;cursor:pointer;display:inline-block}
+.tog-wrap input{opacity:0;width:0;height:0;position:absolute}
+.tog-track{position:absolute;inset:0;background:var(--paper-2);border-radius:12px;border:1px solid var(--line-strong);transition:all .2s}
+.tog-thumb{position:absolute;top:3px;left:3px;width:15px;height:15px;background:var(--muted);border-radius:50%;transition:all .2s}
+.tog-wrap input:checked~.tog-track{background:var(--gold);border-color:var(--gold-deep)}
+.tog-wrap input:checked~.tog-thumb{left:24px;background:#fff}
+
+/* Intro card */
+.intro{background:rgba(255,255,255,.5);border:1px solid var(--line);border-radius:3px;padding:1.4rem 1.5rem;margin-bottom:1.5rem}
+.intro p{font-size:.96rem;line-height:1.65;color:var(--charcoal)}
+.intro .lead{font-size:.72rem;font-family:"Helvetica Neue",Arial,sans-serif;letter-spacing:.03em;color:var(--muted);margin-top:.85rem;display:flex;gap:1.25rem;flex-wrap:wrap}
+.intro .lead b{color:var(--ink);font-weight:600}
+
+/* Mode buttons */
+.modes{display:flex;flex-direction:column;gap:.7rem;margin-bottom:2.25rem}
+.mode-btn{width:100%;padding:1.1rem 1.25rem;border:1px solid var(--line-strong);border-radius:3px;background:#fff;color:var(--ink);cursor:pointer;font-family:inherit;text-align:left;display:flex;align-items:flex-start;gap:.9rem;transition:all .16s}
+.mode-btn:hover{border-color:var(--ink);transform:translateY(-1px);box-shadow:0 4px 14px rgba(26,26,26,.08)}
+.mode-btn .idx{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.8rem;font-weight:700;line-height:1;color:#fff;background:var(--ink);width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.mode-btn.primary .idx{background:var(--red)}
+.mode-btn.sim .idx{background:var(--charcoal)}
+.mode-btn.inf .idx{background:var(--gold-deep);font-size:.95rem}
+.mode-btn.weak .idx{background:var(--red);font-size:.72rem}
+.mode-btn.weak{border-color:var(--red)}
+.mode-btn .body{flex:1;min-width:0;display:flex;flex-direction:column;gap:.25rem}
+.mode-btn .t{font-size:1.02rem;font-weight:600;letter-spacing:-.01em;line-height:1.2;display:block}
+.mode-btn .d{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.74rem;color:var(--muted);letter-spacing:.01em;line-height:1.35;display:block}
+.mode-btn .arr{color:var(--muted-2);font-size:1.1rem;line-height:1;transition:transform .16s;margin-top:3px;flex-shrink:0}
+.mode-btn:hover .arr{transform:translateX(3px);color:var(--ink)}
+
+/* Section label */
+.sec-label{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.62rem;font-weight:600;letter-spacing:.22em;color:var(--muted);text-transform:uppercase;margin-bottom:.9rem;display:flex;align-items:center;gap:.7rem}
+.sec-label::after{content:"";flex:1;height:1px;background:var(--line)}
+
+/* Category buttons */
+.cat-btn{width:100%;padding:.85rem 1.1rem;border:1px solid var(--line);border-radius:3px;background:transparent;color:var(--ink);cursor:pointer;font-family:inherit;display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;transition:all .16s}
+.cat-btn:hover{background:#fff;border-color:var(--line-strong)}
+.cat-btn .cn{font-size:.95rem;font-weight:500}
+.cat-btn .cc{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.7rem;color:var(--muted-2);letter-spacing:.02em}
+
+/* Quiz progress */
+.pinfo{display:flex;justify-content:space-between;align-items:baseline;font-family:"Helvetica Neue",Arial,sans-serif;font-size:.68rem;letter-spacing:.05em;color:var(--muted);margin-bottom:.5rem;text-transform:uppercase}
+.pinfo b{color:var(--ink);font-weight:700}
+.pbar{height:2px;background:var(--paper-2);border-radius:2px;overflow:hidden;margin-bottom:1.5rem}
+.pfill{height:100%;background:var(--red);transition:width .4s ease}
+
+/* Infinite stats */
+.inf-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.6rem;margin-bottom:1.5rem}
+.stat-box{background:#fff;border:1px solid var(--line);border-radius:3px;padding:.8rem .5rem;text-align:center}
+.stat-num{font-size:1.5rem;font-weight:700;color:var(--ink);line-height:1}
+.stat-num.g{color:var(--gold-deep)}.stat-num.gr{color:var(--green)}
+.stat-lbl{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:.15em;margin-top:.4rem}
+
+/* Question */
+.cat-tag{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.62rem;font-weight:600;letter-spacing:.16em;color:var(--gold-deep);text-transform:uppercase;margin-bottom:.7rem}
+.q-card{background:#fff;border:1px solid var(--line);border-left:3px solid var(--red);border-radius:3px;padding:1.5rem;margin-bottom:1.5rem}
+.q-text{font-size:1.15rem;line-height:1.5;color:var(--ink);font-weight:500}
+.q-trans{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.85rem;line-height:1.5;color:var(--muted);margin-top:.75rem;padding-top:.75rem;border-top:1px solid var(--line)}
+
+/* Options */
+.opt{width:100%;padding:.95rem 1.1rem;border:1px solid var(--line-strong);border-radius:3px;background:#fff;color:var(--ink);text-align:left;font-family:inherit;font-size:.98rem;line-height:1.45;cursor:pointer;display:flex;align-items:flex-start;gap:.85rem;margin-bottom:.55rem;transition:all .16s}
+.opt:hover:not([disabled]){border-color:var(--ink);background:#fff;transform:translateX(2px)}
+.opt[disabled]{cursor:default}
+.opt.correct{background:var(--green-bg);border-color:var(--green);color:var(--green)}
+.opt.wrong{background:var(--red-bg);border-color:var(--red);color:var(--red)}
+.opt-letter{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.72rem;font-weight:700;color:var(--muted);min-width:18px;padding-top:.12rem;flex-shrink:0}
+.opt.correct .opt-letter{color:var(--green)}.opt.wrong .opt-letter{color:var(--red)}
+.opt-en{display:block;font-family:"Helvetica Neue",Arial,sans-serif;font-size:.78rem;color:var(--muted-2);margin-top:.25rem}
+.opt.correct .opt-en{color:var(--green)}.opt.wrong .opt-en{color:var(--red)}
+
+/* Feedback */
+.feedback{padding:.9rem 1.1rem;border-radius:3px;margin-bottom:1rem;font-size:.9rem;font-weight:500;line-height:1.5}
+.feedback.ok{background:var(--green-bg);border:1px solid var(--green);color:var(--green)}
+.feedback.fail{background:var(--red-bg);border:1px solid var(--red);color:var(--red)}
+
+/* Primary action button */
+.act-btn{width:100%;padding:.95rem 1.5rem;border:none;border-radius:3px;background:var(--ink);color:var(--paper);font-family:"Helvetica Neue",Arial,sans-serif;font-size:.82rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;transition:all .16s;margin-bottom:.55rem}
+.act-btn:hover{background:var(--red)}
+.act-btn.ghost{background:transparent;border:1px solid var(--line-strong);color:var(--ink)}
+.act-btn.ghost:hover{background:#fff;border-color:var(--ink)}
+
+/* Result */
+.result-card{background:#fff;border:1px solid var(--line);border-radius:3px;padding:2rem 1.5rem;text-align:center;margin-bottom:1.5rem}
+.result-card .lbl{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.62rem;font-weight:600;letter-spacing:.22em;color:var(--muted);text-transform:uppercase;margin-bottom:.75rem}
+.big-score{font-size:clamp(3.5rem,14vw,5rem);font-weight:700;line-height:.9;letter-spacing:-.03em}
+.big-score.pass{color:var(--green)}.big-score.fail{color:var(--red)}
+.score-sub{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.8rem;color:var(--muted);margin:.6rem 0 1rem}
+.verdict{font-size:1rem;font-weight:600}
+.verdict-note{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.72rem;color:var(--muted-2);margin-top:.35rem;font-style:normal}
+
+/* Missed items */
+.missed-item{background:#fff;border:1px solid var(--line);border-left:2px solid var(--red);border-radius:3px;padding:.9rem 1.1rem;margin-bottom:.5rem}
+.missed-meta{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.62rem;letter-spacing:.1em;color:var(--muted-2);text-transform:uppercase;margin-bottom:.35rem}
+.missed-q{font-size:.92rem;color:var(--ink);margin-bottom:.4rem;font-weight:500;line-height:1.4}
+.missed-q-en{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.78rem;color:var(--muted);margin-bottom:.4rem}
+.missed-a{font-size:.9rem;color:var(--green);font-weight:500}
+.missed-a-en{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.76rem;color:var(--green);opacity:.85;margin-top:.15rem}
+
+/* Badges */
+.badge{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.62rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;text-align:center;margin-bottom:1.25rem;padding:.4rem;border-radius:2px}
+.badge.sim{color:var(--charcoal);background:var(--paper-2)}
+.badge.inf{color:var(--gold-deep);background:rgba(200,169,78,.14)}
+.badge.weak-badge{color:var(--red);background:var(--red-bg)}
+.badge.sim #timer{font-variant-numeric:tabular-nums;font-weight:700}
+.badge.sim #timer.time-low{color:var(--red)}
+
+.progress-panel{background:rgba(255,255,255,.5);border:1px solid var(--line);border-radius:3px;padding:1.1rem 1.25rem;margin-bottom:1.5rem}
+/* Account pill (top-right, compact) */
+.acct-corner{position:absolute;top:0;right:0;z-index:20}
+.acct-pill{display:inline-flex;align-items:center;gap:.4rem;background:#fff;border:1px solid var(--line-strong);border-radius:999px;padding:.35rem .6rem .35rem .5rem;cursor:pointer;font-family:"Helvetica Neue",Arial,sans-serif;color:var(--ink);max-width:180px}
+.acct-pill:hover,.acct-pill.open{border-color:var(--ink)}
+.acct-ico{font-size:.82rem;line-height:1}
+.acct-cur-name{font-size:.78rem;font-weight:600;letter-spacing:.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:110px}
+.acct-caret{font-size:.5rem;color:var(--muted-2)}
+.acct-panel{position:absolute;top:calc(100% + .4rem);right:0;min-width:200px;background:#fff;border:1px solid var(--line-strong);border-radius:4px;overflow:hidden;box-shadow:0 6px 20px rgba(26,26,26,.14)}
+.acct-row{display:flex;align-items:center;gap:.6rem;padding:.6rem .8rem;cursor:pointer;font-family:"Helvetica Neue",Arial,sans-serif;font-size:.85rem;border-bottom:1px solid var(--line)}
+.acct-row:hover{background:var(--paper)}
+.acct-row.active{background:var(--paper-2)}
+.acct-dot{font-size:.55rem;color:var(--gold-deep);flex-shrink:0}
+.acct-name{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.acct-del{background:none;border:none;color:var(--muted-2);cursor:pointer;font-size:.72rem;padding:.15rem .35rem;border-radius:2px;flex-shrink:0}
+.acct-del:hover{color:var(--red);background:var(--red-bg)}
+.acct-new{display:flex;gap:.35rem;padding:.55rem .6rem}
+.acct-input{flex:1;min-width:0;border:1px solid var(--line-strong);border-radius:3px;padding:.4rem .55rem;font-family:"Helvetica Neue",Arial,sans-serif;font-size:.82rem;background:var(--paper);color:var(--ink)}
+.acct-input:focus{outline:none;border-color:var(--ink)}
+.acct-add{border:none;background:var(--ink);color:var(--paper);border-radius:3px;width:32px;font-size:1rem;font-weight:600;cursor:pointer;flex-shrink:0}
+.acct-add:hover{background:var(--red)}
+/* History */
+.hist{border:1px solid var(--line);border-radius:3px;overflow:hidden;background:#fff}
+.hist-row{display:flex;align-items:center;gap:.7rem;padding:.6rem .85rem;font-family:"Helvetica Neue",Arial,sans-serif;font-size:.8rem;border-bottom:1px solid var(--line);color:var(--charcoal)}
+.hist-row:last-child{border-bottom:none}
+.hist-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.hist-dot.pass{background:var(--green)}
+.hist-dot.fail{background:var(--red)}
+.hist-mode{font-weight:600;color:var(--ink);min-width:72px}
+.hist-cat{flex:1;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hist-score{font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink)}
+.hist-date{color:var(--muted-2);min-width:78px;text-align:right;font-size:.72rem}
+.progress-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.6rem}
+.progress-label{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.62rem;font-weight:600;letter-spacing:.18em;color:var(--muted);text-transform:uppercase}
+.reset-link{background:none;border:none;font-family:"Helvetica Neue",Arial,sans-serif;font-size:.66rem;color:var(--muted-2);cursor:pointer;text-decoration:underline;padding:0}
+.reset-link:hover{color:var(--red)}
+.progress-bar{height:6px;background:var(--paper-2);border-radius:3px;overflow:hidden;margin-bottom:.5rem}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold-deep),var(--gold));transition:width .5s ease}
+.progress-stats{display:flex;justify-content:space-between;font-family:"Helvetica Neue",Arial,sans-serif;font-size:.72rem;color:var(--muted)}
+.progress-stats b{color:var(--ink);font-weight:700}
+.kbd-hint{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.68rem;color:var(--muted-2);text-align:center;margin-top:1rem;letter-spacing:.02em}
+.kbd-hint kbd{display:inline-block;font-family:inherit;font-size:.66rem;font-weight:600;background:#fff;border:1px solid var(--line-strong);border-bottom-width:2px;border-radius:3px;padding:.05rem .3rem;color:var(--ink);margin:0 .05rem}
+.fade{animation:fadeIn .35s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="bg-seal"></div>
+<div class="wrap">
+  <header class="header">
+    <div class="flag"><i class="k"></i><i class="r"></i><i class="g"></i></div>
+    <div class="eyebrow">Einbürgerungstest · Vorbereitung</div>
+    <h1>Staatsbürgerkunde</h1>
+    <div class="sub">300 offizielle BAMF-Fragen</div>
+  </header>
+  <div id="app"></div>
+  <div class="spacer"></div>
+</div>
+<script>var Q=[
+{id:1,cat:"Demokratie",q:"In Deutschland dürfen Menschen offen etwas gegen die Regierung sagen, weil ...",o:["hier Religionsfreiheit gilt.","die Menschen Steuern zahlen.","die Menschen das Wahlrecht haben.","hier Meinungsfreiheit gilt."],a:3},
+{id:2,cat:"Gesellschaft",q:"In Deutschland können Eltern bis zum 14. Lebensjahr ihres Kindes entscheiden, ob es in der Schule am ... teilnimmt.",o:["Geschichtsunterricht","Religionsunterricht","Politikunterricht","Sprachunterricht"],a:1},
+{id:3,cat:"Demokratie",q:"Deutschland ist ein Rechtsstaat. Was ist damit gemeint?",o:["Alle Einwohner und der Staat müssen sich an die Gesetze halten.","Der Staat muss sich nicht an die Gesetze halten.","Nur Deutsche müssen die Gesetze befolgen.","Die Gerichte machen die Gesetze."],a:0},
+{id:4,cat:"Demokratie",q:"Welches Recht gehört zu den Grundrechten in Deutschland?",o:["Waffenbesitz","Faustrecht","Meinungsfreiheit","Selbstjustiz"],a:2},
+{id:5,cat:"Wahlen",q:"Wahlen in Deutschland sind frei. Was bedeutet das?",o:["Man darf Geld annehmen, wenn man dafür einen bestimmten Kandidaten wählt.","Der Wähler darf weder beeinflusst noch zu einer bestimmten Stimmabgabe gezwungen werden.","Nur Personen, die noch nie im Gefängnis waren, dürfen wählen.","Alle wahlberechtigten Personen müssen wählen."],a:1},
+{id:6,cat:"Demokratie",q:"Wie heißt die deutsche Verfassung?",o:["Volksgesetz","Bundesgesetz","Deutsches Gesetz","Grundgesetz"],a:3},
+{id:7,cat:"Demokratie",q:"Welches Recht gehört zu den Grundrechten nach der deutschen Verfassung?",o:["Glaubens- und Gewissensfreiheit","Unterhaltung","Arbeit","Wohnung"],a:0},
+{id:8,cat:"Demokratie",q:"Was steht nicht im Grundgesetz von Deutschland?",o:["Die Würde des Menschen ist unantastbar.","Alle sollen gleich viel Geld haben.","Jeder Mensch darf seine Meinung sagen.","Alle sind vor dem Gesetz gleich."],a:1},
+{id:9,cat:"Demokratie",q:"Welches Grundrecht gilt in Deutschland nur für Ausländer? Das Grundrecht auf ...",o:["Schutz der Familie","Menschenwürde","Asyl","Meinungsfreiheit"],a:2},
+{id:10,cat:"Demokratie",q:"Was ist mit dem deutschen Grundgesetz vereinbar?",o:["die Prügelstrafe","die Folter","die Todesstrafe","die Geldstrafe"],a:3},
+{id:11,cat:"Demokratie",q:"Wie wird die Verfassung der Bundesrepublik Deutschland genannt?",o:["Grundgesetz","Bundesverfassung","Gesetzbuch","Verfassungsvertrag"],a:0},
+{id:12,cat:"Demokratie",q:"Eine Partei im Deutschen Bundestag will die Pressefreiheit abschaffen. Ist das möglich?",o:["Ja, wenn mehr als die Hälfte der Abgeordneten dafür sind.","Ja, aber dazu müssen zwei Drittel der Abgeordneten dafür sein.","Nein, die Pressefreiheit ist ein Grundrecht und kann nicht abgeschafft werden.","Nein, denn nur der Bundesrat kann die Pressefreiheit abschaffen."],a:2},
+{id:13,cat:"Demokratie",q:"Im Parlament steht der Begriff Opposition für ...",o:["die regierenden Parteien.","alle Abgeordneten, die nicht zur Regierungspartei gehören.","die Fraktion mit den meisten Abgeordneten.","alle Parteien, die die 5%-Hürde erreichen konnten."],a:1},
+{id:14,cat:"Demokratie",q:"Meinungsfreiheit in Deutschland heißt zum Beispiel, dass ich ...",o:["Passanten auf der Straße beschimpfen darf.","meine Meinung im Internet äußern kann.","Nazi-Symbole öffentlich tragen darf.","meine Meinung nur äußern darf, wenn ich der Regierung nicht widerspreche."],a:1},
+{id:15,cat:"Demokratie",q:"Was verbietet das deutsche Grundgesetz?",o:["Militärdienst","Zwangsarbeit","freie Berufswahl","Arbeit im Ausland"],a:1},
+{id:16,cat:"Demokratie",q:"Wann ist die Meinungsfreiheit in Deutschland eingeschränkt?",o:["bei der öffentlichen Verbreitung falscher Behauptungen über einzelne Personen","bei Meinungsäußerungen über die Bundesregierung","bei Diskussionen über Religionen","bei Kritik am Staat"],a:0},
+{id:17,cat:"Demokratie",q:"Die deutschen Gesetze verbieten ...",o:["Meinungsfreiheit der Einwohner.","Petitionen der Bürger.","Versammlungsfreiheit der Einwohner.","Ungleichbehandlung der Bürger durch den Staat."],a:3},
+{id:18,cat:"Demokratie",q:"Welches Grundrecht ist in Artikel 1 des Grundgesetzes garantiert?",o:["die Unantastbarkeit der Menschenwürde","das Recht auf Leben","Religionsfreiheit","Meinungsfreiheit"],a:0},
+{id:19,cat:"Demokratie",q:"Was versteht man unter dem Recht der Freizügigkeit in Deutschland?",o:["Man darf sich seinen Wohnort selbst aussuchen.","Man kann seinen Beruf wechseln.","Man darf sich für eine andere Religion entscheiden.","Man darf sich in der Öffentlichkeit nur leicht bekleidet bewegen."],a:0},
+{id:20,cat:"Demokratie",q:"Eine Partei in Deutschland verfolgt das Ziel, eine Diktatur zu errichten. Sie ist dann ...",o:["tolerant.","rechtsstaatlich orientiert.","gesetzestreu.","verfassungswidrig."],a:3},
+{id:21,cat:"Staat",q:"Was für eine Staatsform hat Deutschland?",o:["Monarchie","Diktatur","Republik","Fürstentum"],a:2},
+{id:22,cat:"Staat",q:"Wie viele Bundesländer hat die Bundesrepublik Deutschland?",o:["14","15","16","17"],a:2},
+{id:23,cat:"Staat",q:"Was ist kein Bundesland der Bundesrepublik Deutschland?",o:["Nordrhein-Westfalen","Elsass-Lothringen","Mecklenburg-Vorpommern","Sachsen-Anhalt"],a:1},
+{id:24,cat:"Staat",q:"Deutschland ist ...",o:["eine kommunistische Republik.","ein demokratischer und sozialer Bundesstaat.","eine kapitalistische und soziale Monarchie.","ein sozialer und sozialistischer Bundesstaat."],a:1},
+{id:25,cat:"Staat",q:"Mit welchen Worten beginnt die deutsche Nationalhymne?",o:["Völker, hört die Signale ...","Einigkeit und Recht und Freiheit ...","Freude schöner Götterfunken ...","Deutschland einig Vaterland ..."],a:1},
+{id:26,cat:"Wahlen",q:"Wer wählt in Deutschland die Abgeordneten zum Bundestag?",o:["das Militär","die Wirtschaft","das wahlberechtigte Volk","die Verwaltung"],a:2},
+{id:27,cat:"Staat",q:"Welches Tier ist das Wappentier der Bundesrepublik Deutschland?",o:["Löwe","Adler","Bär","Pferd"],a:1},
+{id:28,cat:"Demokratie",q:"Was ist kein Merkmal unserer Demokratie?",o:["regelmäßige Wahlen","Pressezensur","Meinungsfreiheit","verschiedene Parteien"],a:1},
+{id:29,cat:"Politik",q:"Die Zusammenarbeit von Parteien zur Bildung einer Regierung nennt man in Deutschland ...",o:["Einheit.","Koalition.","Ministerium.","Fraktion."],a:1},
+{id:30,cat:"Demokratie",q:"Was ist keine staatliche Gewalt in Deutschland?",o:["Gesetzgebung","Regierung","Presse","Rechtsprechung"],a:2},
+{id:31,cat:"Gesellschaft",q:"Welche Aussage ist richtig? In Deutschland ...",o:["sind Staat und Religionsgemeinschaften voneinander getrennt.","bilden die Religionsgemeinschaften den Staat.","ist der Staat abhängig von den Religionsgemeinschaften.","bilden Staat und Religionsgemeinschaften eine Einheit."],a:0},
+{id:32,cat:"Staat",q:"Was ist Deutschland nicht?",o:["eine Demokratie","ein Rechtsstaat","eine Monarchie","ein Sozialstaat"],a:2},
+{id:33,cat:"Gesellschaft",q:"Womit finanziert der deutsche Staat die Sozialversicherung?",o:["Kirchensteuern","Sozialabgaben","Spendengeldern","Vereinsbeiträgen"],a:1},
+{id:34,cat:"Gesellschaft",q:"Welche Maßnahme schafft in Deutschland soziale Sicherheit?",o:["die Krankenversicherung","die Autoversicherung","die Gebäudeversicherung","die Haftpflichtversicherung"],a:0},
+{id:35,cat:"Politik",q:"Wie werden die Regierungschefs der meisten Bundesländer in Deutschland genannt?",o:["Erster Minister","Premierminister","Senator","Ministerpräsident"],a:3},
+{id:36,cat:"Staat",q:"Die Bundesrepublik Deutschland ist ein demokratischer und sozialer ...",o:["Staatenverbund.","Bundesstaat.","Staatenbund.","Zentralstaat."],a:1},
+{id:37,cat:"Staat",q:"Was hat jedes deutsche Bundesland?",o:["einen eigenen Aussenminister","eine eigene Währung","eine eigene Armee","eine eigene Regierung"],a:3},
+{id:38,cat:"Wahlen",q:"Warum gibt es in einer Demokratie mehr als eine Partei?",o:["weil dadurch die unterschiedlichen Meinungen der Bürger vertreten werden","damit Bestechung in der Politik begrenzt wird","um politische Demonstrationen zu verhindern","um wirtschaftlichen Wettbewerb anzuregen"],a:0},
+{id:39,cat:"Politik",q:"Wer beschliesst in Deutschland ein neus Gesetz?",o:["die Regierung","das Parlament","die Gerichte","die Polizei"],a:1},
+{id:40,cat:"Politik",q:"Wann kann in Deutschland eine Partei verboten werden?",o:["wenn ihr Wahlkampf zu teuer ist","wenn sie gegen die Verfassung kämpft","wenn sie Kritik am Staatsoberhaupt äußert","wenn ihr Programm eine neu Richtung vorschlägt"],a:1},
+{id:41,cat:"Wahlen",q:"Wen kann man als Bürger in Deutschland nicht direkt wählen?",o:["Abgeordnete des EU-Parlaments","den Bundespräsidenten","Landtagsabgeordnete","Bundestagsabgeordnete"],a:1},
+{id:42,cat:"Gesellschaft",q:"Zu welcher Versicherung gehört die Pflegeversicherung?",o:["Sozialversicherung","Unfallversicherung","Hausratversicherung","Haftpflicht- und Feuerversicherung"],a:0},
+{id:43,cat:"Gesellschaft",q:"Der deutsche Staat hat viele Aufgaben. Welche Aufgabe gehört dazu?",o:["Er baut Straßen und Schulen.","Er verkauft Lebensmittel und Kleidung.","Er versorgt alle Einwohner kostenlos mit Zeitungen.","Er produziert Autos und Busse."],a:0},
+{id:44,cat:"Gesellschaft",q:"Der deutsche Staat hat viele Aufgaben. Welche Aufgabe gehört nicht dazu?",o:["Er bezahlt für alle Staatsangehörigen Urlaubsreisen.","Er zahlt Kindergeld.","Er unterstützt Museen.","Er fördert Sportler."],a:0},
+{id:45,cat:"Politik",q:"Welches Organ gehört nicht zu den Verfassungsorganen Deutschlands?",o:["der Bundesrat","der Bundespräsident","die Bürgerversammlung","die Regierung"],a:2},
+{id:46,cat:"Politik",q:"Wer bestimmt in Deutschland die Schulpolitik?",o:["die Lehrer","die Bundesländer","das Familienministerium","die Universitäten"],a:1},
+{id:47,cat:"Gesellschaft",q:"Die Wirtschaftsform in Deutschland nennt man ...",o:["freie Zentralwirtschaft.","soziale Marktwirtschaft.","gelenkte Zentralwirtschaft.","Planwirtschaft."],a:1},
+{id:48,cat:"Demokratie",q:"Was bedeutet Volkssouveränität? Alle Staatsgewalt geht vom ...",o:["Volke aus.","Bundestag aus.","preussischen König aus.","Bundesverfassungsgericht aus."],a:0},
+{id:49,cat:"Demokratie",q:"Was bedeutet Rechtsstaat in Deutschland?",o:["Der Staat hat Recht.","Es gibt nur rechte Parteien.","Die Bürger entscheiden über Gesetze.","Der Staat muss die Gesetze einhalten."],a:3},
+{id:50,cat:"Demokratie",q:"Was ist keine staatliche Gewalt in Deutschland?",o:["Legislative","Judikative","Exekutive","Direktive"],a:3},
+{id:51,cat:"Politik",q:"Was gehört in Deutschland nicht zur Exekutive?",o:["die Polizei","die Gerichte","das Finanzamt","die Ministerien"],a:1},
+{id:52,cat:"Staat",q:"Die Bundesrepublik Deutschland ist heute gegliedert in ...",o:["vier Besatzungszonen.","einen Oststaat und einen Weststaat.","16 Kantone.","Bund, Länder und Kommunen."],a:3},
+{id:53,cat:"Politik",q:"Es gehört nicht zu den Aufgaben des Deutschen Bundestages ...",o:["Gesetze zu entwerfen.","die Bundesregierung zu kontrollieren.","den Bundeskanzler zu wählen.","das Bundeskabinett zu bilden."],a:3},
+{id:54,cat:"Politik",q:"Was ist in Deutschland vor allem eine Aufgabe der Bundesländer?",o:["Verteidigungspolitik","Aussenpolitik","Wirtschaftspolitik","Schulpolitik"],a:3},
+{id:55,cat:"Gesellschaft",q:"Warum kontrolliert der Staat in Deutschland das Schulwesen?",o:["weil es in Deutschland nur staatliche Schulen gibt","weil alle Schüler einen Schulabschluss haben müssen","weil es in den Bundesländern verschiedene Schulen gibt","weil es nach dem Grundgesetz seine Aufgabe ist"],a:3},
+{id:56,cat:"Politik",q:"Was gehört zu den Aufgaben des deutschen Bundespräsidenten?",o:["Er führt die Regierungsgeschäfte.","Er kontrolliert die Regierungspartei.","Er wählt die Minister aus.","Er schlägt den Kanzler zur Wahl vor."],a:3},
+{id:57,cat:"Politik",q:"Wo hält sich der deutsche Bundeskanzler am häufigsten auf?",o:["in Bonn, wo das Bundeskanzleramt liegt.","in Berlin, weil sich dort das Bundeskanzleramt und der Bundestag befinden.","auf Schloss Meseberg.","auf Schloss Bellevue."],a:1},
+{id:58,cat:"Politik",q:"Wie heißt der jetzige Bundeskanzler von Deutschland?",o:["Gerhard Schröder","Jürgen Rüttgers","Klaus Wowereit","Friedrich Merz"],a:3},
+{id:59,cat:"Politik",q:"Wie heißt das Parlament für ganz Deutschland?",o:["Bundesversammlung","Volkskammer","Bundestag","Bundesgerichtshof"],a:2},
+{id:60,cat:"Politik",q:"Wie heißt Deutschlands heutiges Staatsoberhaupt?",o:["Frank-Walter Steinmeier","Norbert Lammert","Wolfgang Thierse","Edmund Stoiber"],a:0},
+{id:61,cat:"Politik",q:"Was bedeutet die Abkürzung CDU in Deutschland?",o:["Christliche Deutsche Union","Club Deutscher Unternehmer","Christlicher Deutscher Umweltschutz","Christlich Demokratische Union"],a:3},
+{id:62,cat:"Staat",q:"Was ist die Bundeswehr?",o:["die deutsche Polizei","ein deutscher Hafen","eine deutsche Bürgerinitiative","die deutsche Armee"],a:3},
+{id:63,cat:"Politik",q:"Was bedeutet die Abkürzung SPD?",o:["Sozialistische Partei Deutschlands","Sozialpolitische Partei Deutschlands","Sozialdemokratische Partei Deutschlands","Sozialgerechte Partei Deutschlands"],a:2},
+{id:64,cat:"Politik",q:"Was bedeutet die Abkürzung FDP in Deutschland?",o:["Friedliche Demonstrative Partei","Freie Deutschland Partei","Führende Demokratische Partei","Freie Demokratische Partei"],a:3},
+{id:65,cat:"Politik",q:"Welches Gericht in Deutschland ist zuständig für die Auslegung des Grundgesetzes?",o:["Oberlandesgericht","Amtsgericht","Bundesverfassungsgericht","Verwaltungsgericht"],a:2},
+{id:66,cat:"Politik",q:"Wer wählt den Bundeskanzler in Deutschland?",o:["der Bundesrat","die Bundesversammlung","das Volk","der Bundestag"],a:3},
+{id:67,cat:"Politik",q:"Wer leitet das deutsche Bundeskabinett?",o:["der Bundestagspräsident","der Bundespräsident","der Bundeskanzler","der Bundesratspräsident"],a:2},
+{id:68,cat:"Politik",q:"Welche Hauptaufgabe hat der deutsche Bundespräsident?",o:["regiert das Land.","entwirft die Gesetze.","repräsentiert das Land.","überwacht die Einhaltung der Gesetze."],a:2},
+{id:69,cat:"Politik",q:"Wer bildet den deutschen Bundesrat?",o:["die Abgeordneten des Bundestages","die Minister der Bundesregierung","die Regierungsvertreter der Bundesländer","die Parteimitglieder"],a:2},
+{id:70,cat:"Politik",q:"Wer wählt in Deutschland den Bundespräsidenten?",o:["die Bundesversammlung","der Bundesrat","das Bundesparlament","das Bundesverfassungsgericht"],a:0},
+{id:71,cat:"Politik",q:"Wer ist das Staatsoberhaupt der Bundesrepublik Deutschland?",o:["der Bundeskanzler","der Bundespräsident","der Bundesratspräsident","der Bundestagspräsident"],a:1},
+{id:72,cat:"Politik",q:"Die parlamentarische Opposition im Deutschen Bundestag ...",o:["kontrolliert die Regierung.","entscheidet, wer Bundesminister wird.","bestimmt, wer im Bundesrat sitzt.","schlägt die Regierungschefs der Länder vor."],a:0},
+{id:73,cat:"Politik",q:"Wie nennt man in Deutschland die Vereinigung von Abgeordneten einer Partei im Parlament?",o:["Verband","Ältestenrat","Fraktion","Opposition"],a:2},
+{id:74,cat:"Politik",q:"Die deutschen Bundesländer wirken an der Gesetzgebung des Bundes mit durch ...",o:["den Bundesrat.","die Bundesversammlung.","den Bundestag.","die Bundesregierung."],a:0},
+{id:75,cat:"Politik",q:"Was bedeutet die Abkürzung CSU in Deutschland?",o:["Christlich Sichere Union","Christlich Südbayerische Union","Christlich Sozialer Unternehmerverband","Christlich Soziale Union"],a:3},
+{id:76,cat:"Wahlen",q:"Je mehr Zweitstimmen eine Partei bei einer Bundestagswahl bekommt, desto ...",o:["mehr Sitze erhält die Partei im Parlament.","weniger Erststimmen kann sie haben.","mehr Direktkandidaten ziehen ins Parlament ein.","größer ist das Risiko, eine Koalition bilden zu müssen."],a:0},
+{id:77,cat:"Wahlen",q:"Ab welchem Alter darf man in Deutschland an der Wahl zum Deutschen Bundestag teilnehmen?",o:["16","18","21","23"],a:1},
+{id:78,cat:"Gesellschaft",q:"Was gilt für die meisten Kinder in Deutschland?",o:["Wahlpflicht","Schulpflicht","Schweigepflicht","Religionspflicht"],a:1},
+{id:79,cat:"Geschichte",q:"Wie kann jemand, der den Holocaust leugnet, bestraft werden?",o:["Kürzung sozialer Leistungen","bis zu 100 Sozialstunden","gar nicht, Holocaustleugnung ist erlaubt","mit Freiheitsstrafe bis zu fünf Jahren oder mit Geldstrafe"],a:3},
+{id:80,cat:"Gesellschaft",q:"Was bezahlt man in Deutschland automatisch, wenn man fest angestellt ist?",o:["Sozialversicherung","Sozialhilfe","Kindergeld","Wohngeld"],a:0},
+{id:81,cat:"Gesellschaft",q:"Wer bezahlt in Deutschland die Sozialversicherungen?",o:["Arbeitgeber und Arbeitnehmer","nur Arbeitnehmer","alle Staatsangehörigen","nur Arbeitgeber"],a:0},
+{id:82,cat:"Gesellschaft",q:"Was gehört nicht zur gesetzlichen Sozialversicherung?",o:["die gesetzliche Rentenversicherung","die Lebensversicherung","die Arbeitslosenversicherung","die Pflegeversicherung"],a:1},
+{id:83,cat:"Gesellschaft",q:"Gewerkschaften sind Interessenverbände der ...",o:["Jugendlichen.","Arbeitnehmer.","Rentner.","Arbeitgeber."],a:1},
+{id:84,cat:"Politik",q:"Was wird in Deutschland als Ampelkoalition bezeichnet?",o:["die Zusammenarbeit der Bundestagsfraktionen von CDU und CSU","von SPD, FDP und Bündnis 90/Die Grünen in einer Regierung","von CSU, Die LINKE und Bündnis 90/Die Grünen","die Zusammenarbeit von CDU und SPD"],a:1},
+{id:85,cat:"Gesellschaft",q:"Eine Frau in Deutschland verliert ihre Arbeit. Was darf nicht der Grund für die Entlassung sein?",o:["Die Frau ist lange krank.","Die Frau kam oft zu spät.","Die Frau erledigt private Sachen während der Arbeitszeit.","Die Frau bekommt ein Kind und ihr Chef weiß das."],a:3},
+{id:86,cat:"Wahlen",q:"Was ist eine Aufgabe von Wahlhelfern in Deutschland?",o:["Sie helfen alten Menschen bei der Stimmabgabe in der Wahlkabine.","Sie schreiben die Wahlbenachrichtigungen vor der Wahl.","Sie geben Zwischenergebnisse an die Medien weiter.","Sie zählen die Stimmen nach dem Ende der Wahl."],a:3},
+{id:87,cat:"Wahlen",q:"Für wie viele Jahre wird der Bundestag in Deutschland gewählt?",o:["2 Jahre","4 Jahre","6 Jahre","8 Jahre"],a:1},
+{id:88,cat:"Wahlen",q:"Bei einer Bundestagswahl in Deutschland darf jeder wählen, der ...",o:["in der Bundesrepublik wohnt und wählen möchte.","Bürger der Bundesrepublik ist und mindestens 18 Jahre alt ist.","seit mindestens 3 Jahren in der Bundesrepublik lebt.","Bürger der Bundesrepublik ist und mindestens 21 Jahre alt ist."],a:1},
+{id:89,cat:"Wahlen",q:"Die Wahlen in Deutschland sind ...",o:["speziell.","geheim.","berufsbezogen.","geschlechtsabhängig."],a:1},
+{id:90,cat:"Wahlen",q:"An demokratischen Wahlen in Deutschland teilzunehmen ist ...",o:["eine Pflicht.","ein Recht.","ein Zwang.","eine Last."],a:1},
+{id:91,cat:"Wahlen",q:"Was bedeutet aktives Wahlrecht in Deutschland?",o:["Man kann gewählt werden.","Man muss wählen gehen.","Man kann wählen.","Man muss zur Auszählung der Stimmen gehen."],a:2},
+{id:92,cat:"Wahlen",q:"Wie viel Prozent der Zweitstimmen müssen Parteien mindestens bekommen, um in den Bundestag gewählt zu werden?",o:["3 %","4 %","5 %","6 %"],a:2},
+{id:93,cat:"Wahlen",q:"Eine Partei möchte in den Deutschen Bundestag. Der Mindestanteil an Wählerrstimmen heißt ...",o:["5 %-Hürde.","Zulassungsgrenze.","Basiswert.","Richtlinie."],a:0},
+{id:94,cat:"Wahlen",q:"Welchem Grundsatz unterliegen Wahlen in Deutschland?",o:["frei, gleich, geheim.","offen, sicher, frei.","geschlossen, gleich, sicher.","sicher, offen, freiwillig."],a:0},
+{id:95,cat:"Wahlen",q:"Was ist in Deutschland die 5 %-Hürde?",o:["Abstimmungsregelung im Bundestag für kleine Parteien","Anwesenheitskontrolle im Bundestag","Mindestanteil an Wählerrstimmen, um ins Parlament zu kommen","Anwesenheitskontrolle im Bundesrat"],a:2},
+{id:96,cat:"Wahlen",q:"Was ist bei Bundestags- und Landtagswahlen in Deutschland erlaubt?",o:["Der Ehemann wählt für seine Frau mit.","Man kann durch Briefwahl seine Stimme abgeben.","Man kann am Wahltag telefonisch seine Stimme abgeben.","Kinder ab dem Alter von 14 Jahren dürfen wählen."],a:1},
+{id:97,cat:"Gesellschaft",q:"In Deutschland ist ein Bürgermeister ...",o:["der Leiter einer Schule.","der Chef einer Bank.","das Oberhaupt einer Gemeinde.","der Vorsitzende einer Partei."],a:2},
+{id:98,cat:"Gesellschaft",q:"Viele Menschen in Deutschland arbeiten ehrenamtlich. Was bedeutet das?",o:["Sie arbeiten als Soldaten.","Sie arbeiten freiwillig und unbezahlt in Vereinen und Verbänden.","Sie arbeiten in der Bundesregierung.","Sie arbeiten in einem Krankenhaus und verdienen dabei Geld."],a:1},
+{id:99,cat:"Gesellschaft",q:"Man will die Buslinie abschaffen, mit der Sie immer zur Arbeit fahren. Was können Sie tun, um die Buslinie zu erhalten?",o:["Ich beteilige mich an einer Bürgerinitiative für die Erhaltung der Buslinie.","Ich werde Mitglied in einem Sportverein.","Ich wende mich an das Finanzamt.","Ich schreibe einen Brief an das Forstamt der Gemeinde."],a:0},
+{id:100,cat:"Gesellschaft",q:"Wen vertreten die Gewerkschaften in Deutschland?",o:["große Unternehmen","kleine Unternehmen","Selbständige","Arbeitnehmer"],a:3},
+{id:101,cat:"Gesellschaft",q:"Sie gehen in Deutschland zum Arbeitsgericht bei ...",o:["falscher Nebenkostenabrechnung.","ungerechtfertigter Kündigung durch Ihren Chef.","Problemen mit den Nachbarn.","Schwierigkeiten nach einem Verkehrsunfall."],a:1},
+{id:102,cat:"Gesellschaft",q:"Was kann ich in Deutschland machen, wenn mir mein Arbeitgeber zu Unrecht gekündigt hat?",o:["weiter arbeiten und freundlich zum Chef sein","ein Mahnverfahren führen","Kündigungsschutzklage erheben","den Arbeitgeber bei der Polizei anzeigen"],a:2},
+{id:103,cat:"Demokratie",q:"Was macht ein Schöffe in Deutschland?",o:["Er entscheidet mit Richtern über Schuld und Strafe.","Er gibt Bürgern rechtlichen Rat.","Er stellt Urkunden aus.","Er verteidigt den Angeklagten."],a:0},
+{id:104,cat:"Demokratie",q:"Wer berät in Deutschland Personen bei Rechtsfragen und vertritt sie vor Gericht?",o:["ein Rechtsanwalt","ein Richter","ein Schöffe","ein Staatsanwalt"],a:0},
+{id:105,cat:"Demokratie",q:"Ein Richter in Deutschland gehört zur ...",o:["Judikative.","Exekutive.","Operative.","Legislative."],a:0},
+{id:106,cat:"Gesellschaft",q:"Was ist eine Aufgabe der Polizei in Deutschland?",o:["das Land zu verteidigen","die Bürger abzuhören","die Gesetze zu beschliessen","die Einhaltung von Gesetzen zu überwachen"],a:3},
+{id:107,cat:"Geschichte",q:"Was ist ein Beispiel für antisemitisches Verhalten?",o:["ein jüdisches Fest besuchen","die israelische Regierung kritisieren","den Holocaust leugnen","gegen Juden Fussball spielen"],a:2},
+{id:108,cat:"Geschichte",q:"Wer baute die Mauer in Berlin?",o:["Großbritannien","die Bundesrepublik Deutschland","die DDR","die USA"],a:2},
+{id:109,cat:"Geschichte",q:"Wann waren die Nationalsozialisten mit Adolf Hitler in Deutschland an der Macht?",o:["1918 bis 1923","1932 bis 1950","1933 bis 1945","1945 bis 1989"],a:2},
+{id:110,cat:"Geschichte",q:"Was war am 8. Mai 1945?",o:["Tod Adolf Hitlers","Beginn des Berliner Mauerbaus","Wahl von Konrad Adenauer zum Bundeskanzler","Ende des Zweiten Weltkriegs in Europa"],a:3},
+{id:111,cat:"Geschichte",q:"In welchem Jahr wurde Hitler Reichskanzler?",o:["1923","1927","1933","1936"],a:2},
+{id:112,cat:"Geschichte",q:"Die Nationalsozialisten errichteten 1933 in Deutschland ...",o:["eine Diktatur.","einen demokratischen Staat.","eine Monarchie.","ein Fürstentum."],a:0},
+{id:113,cat:"Geschichte",q:"Was gab es in Deutschland nicht während der Zeit des Nationalsozialismus?",o:["freie Wahlen","Pressezensur","willkürliche Verhaftungen","Verfolgung der Juden"],a:0},
+{id:114,cat:"Geschichte",q:"Was kennzeichnete den NS-Staat?",o:["Eine Politik des staatlichen Rassismus","Eine Politik der Meinungsfreiheit","Eine Politik der allgemeinen Religionsfreiheit","Eine Politik der Entwicklung der Demokratie"],a:0},
+{id:115,cat:"Geschichte",q:"In welchem Jahr zerstörten die Nationalsozialisten Synagogen und jüdische Geschäfte in Deutschland?",o:["1925","1930","1938","1945"],a:2},
+{id:116,cat:"Geschichte",q:"Wie hiess der erste Bundeskanzler der Bundesrepublik Deutschland?",o:["Konrad Adenauer","Kurt Georg Kiesinger","Helmut Schmidt","Willy Brandt"],a:0},
+{id:117,cat:"Geschichte",q:"Bei welchen Demonstrationen riefen die Menschen Wir sind das Volk?",o:["bei den Montagsdemonstrationen 1989 in der DDR","beim Arbeiteraufstand 1953 in der DDR","bei den Demonstrationen 1968 in der BRD","bei den Anti-Atomkraft-Demonstrationen 1985"],a:0},
+{id:118,cat:"Geschichte",q:"Welche Länder wurden nach dem Zweiten Weltkrieg als Alliierte Besatzungsmächte bezeichnet?",o:["Sowjetunion, Großbritannien, Polen, Schweden","Frankreich, Sowjetunion, Italien, Japan","USA, Sowjetunion, Spanien, Portugal","USA, Sowjetunion, Großbritannien, Frankreich"],a:3},
+{id:119,cat:"Geschichte",q:"Wann wurde die Bundesrepublik Deutschland gegründet?",o:["1939","1945","1949","1951"],a:2},
+{id:120,cat:"Geschichte",q:"Was gab es während der Zeit des Nationalsozialismus in Deutschland?",o:["das Recht zur freien Entfaltung der Persönlichkeit","Pressefreiheit","das Verbot von Parteien","den Schutz der Menschenwürde"],a:2},
+{id:121,cat:"Geschichte",q:"In welcher Besatzungszone wurde die DDR gegründet?",o:["amerikanischen Besatzungszone.","französischen Besatzungszone.","britischen Besatzungszone.","sowjetischen Besatzungszone."],a:3},
+{id:122,cat:"Geschichte",q:"Wann wurde die DDR gegründet?",o:["1947","1949","1953","1956"],a:1},
+{id:123,cat:"Geschichte",q:"Wie viele Besatzungszonen gab es in Deutschland nach dem Zweiten Weltkrieg?",o:["3","4","5","6"],a:1},
+{id:124,cat:"Geschichte",q:"Welche deutsche Stadt wurde nach dem Zweiten Weltkrieg in vier Sektoren aufgeteilt?",o:["München","Berlin","Dresden","Frankfurt/Oder"],a:1},
+{id:125,cat:"Geschichte",q:"Wie endete der Zweite Weltkrieg in Europa offiziell?",o:["mit dem Tod Adolf Hitlers","durch die bedingungslose Kapitulation Deutschlands","mit dem Rückzug der Deutschen aus den besetzten Gebieten","durch eine Revolution in Deutschland"],a:1},
+{id:126,cat:"Geschichte",q:"Was wollte Willy Brandt mit seinem Kniefall 1970 in Warschau ausdrücken?",o:["Er hat sich den ehemaligen Alliierten unterworfen.","Er bat Polen und die polnischen Juden um Vergebung.","Er zeigte seine Demut vor dem Warschauer Pakt.","Er sprach ein Gebet am Grab des Unbekannten Soldaten."],a:1},
+{id:127,cat:"Geschichte",q:"Wie heißt das jüdische Gebetshaus?",o:["Basilika","Moschee","Synagoge","Kirche"],a:2},
+{id:128,cat:"Geschichte",q:"Wann war in der Bundesrepublik Deutschland das Wirtschaftswunder?",o:["40er Jahre","50er Jahre","70er Jahre","80er Jahre"],a:1},
+{id:129,cat:"Geschichte",q:"Auf welcher rechtlichen Grundlage wurde der Staat Israell gegründet?",o:["eine Resolution der Vereinten Nationen","ein Beschluss des Zionistenkongresses","ein Vorschlag der Bundesregierung","ein Vorschlag der UdSSR"],a:0},
+{id:130,cat:"Geschichte",q:"Wofür stand der Ausdruck Eiserner Vorhang?",o:["für die Abschottung des Warschauer Pakts gegen den Westen.","Norddeutschlands gegen Südbayern.","Nazi-Deutschlands gegen die Alliierten.","Europas gegen die USA."],a:0},
+{id:131,cat:"Geschichte",q:"Im Jahr 1953 gab es in der DDR einen Aufstand. An welchem Datum erinnerte man daran?",o:["1. Mai","17. Juni","20. Juli","9. November"],a:1},
+{id:132,cat:"Geschichte",q:"In welchem Jahr wurde die Mauer in Berlin gebaut?",o:["1953","1956","1959","1961"],a:3},
+{id:133,cat:"Geschichte",q:"Was bedeutet die Abkürzung DDR?",o:["Dritter Deutscher Rundfunk","Die Deutsche Republik","Dritte Deutsche Republik","Deutsche Demokratische Republik"],a:3},
+{id:134,cat:"Geschichte",q:"Wann wurde die Mauer in Berlin für alle geöffnet?",o:["1987","1989","1992","1995"],a:1},
+{id:135,cat:"Geschichte",q:"Welches heutige Bundesland gehörte früher zum Gebiet der DDR?",o:["Brandenburg","Bayern","Saarland","Hessen"],a:0},
+{id:136,cat:"Geschichte",q:"Von 1961 bis 1989 war Berlin ...",o:["ohne Bürgermeister.","ein eigener Staat.","durch eine Mauer geteilt.","nur mit dem Flugzeug erreichbar."],a:2},
+{id:137,cat:"Staat",q:"Am 3. Oktober feiert man in Deutschland den Tag der Deutschen ...",o:["Einheit.","Nation.","Bundesländer.","Städte."],a:0},
+{id:138,cat:"Geschichte",q:"Welches heutige Bundesland gehörte früher zum Gebiet der DDR? (2)",o:["Hessen","Sachsen-Anhalt","Nordrhein-Westfalen","Saarland"],a:1},
+{id:139,cat:"Geschichte",q:"Warum nennt man die Zeit im Herbst 1989 in der DDR Die Wende?",o:["Die DDR veränderte sich von einer Diktatur zur Demokratie.","von einer liberalen Marktwirtschaft zum Sozialismus.","von einer Monarchie zur Sozialdemokratie.","von einem religiösen Staat zu einem kommunistischen Staat."],a:0},
+{id:140,cat:"Geschichte",q:"Welches heutige Bundesland gehörte früher zum Gebiet der DDR? (3)",o:["Thüringen","Hessen","Bayern","Bremen"],a:0},
+{id:141,cat:"Geschichte",q:"Welches heutige Bundesland gehörte früher zum Gebiet der DDR? (4)",o:["Bayern","Niedersachsen","Sachsen","Baden-Württemberg"],a:2},
+{id:142,cat:"Geschichte",q:"Mit der Abkürzung Stasi meinte man in der DDR ...",o:["das Parlament.","das Ministerium für Staatssicherheit.","eine regierende Partei.","das Ministerium für Volksbildung."],a:1},
+{id:143,cat:"Geschichte",q:"Welche der folgenden Auflistungen enthält nur Bundesländer, die zum Gebiet der früheren DDR gehorten?",o:["Niedersachsen, NRW, Hessen, Schleswig-Holstein, Brandenburg","Mecklenburg-Vorpommern, Brandenburg, Sachsen, Sachsen-Anhalt, Thüringen","Bayern, Baden-Württemberg, Rheinland-Pfalz, Thüringen, Sachsen","Sachsen, Thüringen, Hessen, Niedersachsen, Brandenburg"],a:1},
+{id:144,cat:"Geschichte",q:"Zu wem gehörte die DDR im Kalten Krieg?",o:["zu den Westmächten","zum Warschauer Pakt","zur NATO","zu den blockfreien Staaten"],a:1},
+{id:145,cat:"Geschichte",q:"Wie hiess das Wirtschaftssystem der DDR?",o:["Marktwirtschaft","Planwirtschaft","Angebot und Nachfrage","Kapitalismus"],a:1},
+{id:146,cat:"Geschichte",q:"Wie wurden die Bundesrepublik Deutschland und die DDR zu einem Staat?",o:["Die Bundesrepublik hat die DDR besetzt.","Die heutigen fünf östlichen Bundesländer sind der Bundesrepublik beigetreten.","Die westlichen Bundesländer sind der DDR beigetreten.","Die DDR hat die Bundesrepublik besetzt."],a:1},
+{id:147,cat:"Geschichte",q:"Was war die Stasi?",o:["der Geheimdienst im Dritten Reich","eine berühmt deutsche Gedenkstätte","der Geheimdienst der DDR","ein deutscher Sportverein während des Zweiten Weltkrieges"],a:2},
+{id:148,cat:"Geschichte",q:"Was ereignete sich am 17. Juni 1953 in der DDR?",o:["der feierliche Beitritt zum Warschauer Pakt","landesweite Streiks und ein Volksaufstand","der 1. SED-Parteitag","der erste Besuch Fidel Castros"],a:1},
+{id:149,cat:"Geschichte",q:"Welcher Politiker steht für die Ostverträge?",o:["Helmut Kohl","Willy Brandt","Michail Gorbatschow","Ludwig Erhard"],a:1},
+{id:150,cat:"Staat",q:"Wie viele Einwohner hat Deutschland?",o:["70 Millionen","78 Millionen","84 Millionen","90 Millionen"],a:2},
+{id:151,cat:"Staat",q:"Welche Farben hat die deutsche Flagge?",o:["schwarz-rot-gold","rot-weiß-schwarz","schwarz-rot-grün","schwarz-gelb-rot"],a:0},
+{id:152,cat:"Geschichte",q:"Wer wird als Kanzler der Deutschen Einheit bezeichnet?",o:["Gerhard Schröder","Helmut Kohl","Konrad Adenauer","Helmut Schmidt"],a:1},
+{id:153,cat:"Geschichte",q:"In welchem Zeitraum gab es die Deutsche Demokratische Republik (DDR)?",o:["1919 bis 1927","1933 bis 1945","1949 bis 1990","1945 bis 1961"],a:2},
+{id:154,cat:"Geschichte",q:"Wie viele Bundesländer kamen bei der Wiedervereinigung 1990 zur Bundesrepublik hinzu?",o:["4","5","6","7"],a:1},
+{id:155,cat:"Staat",q:"Die Bundesrepublik Deutschland hat die Grenzen von heute seit ...",o:["1933.","1949.","1971.","1990."],a:3},
+{id:156,cat:"Geschichte",q:"Der 27. Januar ist in Deutschland ein offizieller Gedenktag. Woran erinnert dieser Tag?",o:["an das Ende des Zweiten Weltkrieges","an die Verabschiedung des Grundgesetzes","an die Wiedervereinigung Deutschlands","an die Opfer des Nationalsozialismus"],a:3},
+{id:157,cat:"Europa",q:"Deutschland ist Mitglied des Schengener Abkommens. Was bedeutet das?",o:["Deutsche können in viele Länder Europas ohne Passkontrolle reisen.","Alle Menschen können ohne Personenkontrolle in Deutschland einreisen.","Deutsche können ohne Passkontrolle in jedes Land reisen.","Deutsche können in jedem Land mit dem Euro bezahlen."],a:0},
+{id:158,cat:"Europa",q:"Welches Land ist ein Nachbarland von Deutschland? (A)",o:["Ungarn","Portugal","Spanien","Schweiz"],a:3},
+{id:159,cat:"Europa",q:"Welches Land ist ein Nachbarland von Deutschland? (B)",o:["Rumänien","Bulgarien","Polen","Griechenland"],a:2},
+{id:160,cat:"Europa",q:"Was bedeutet die Abkürzung EU?",o:["Europäische Unternehmen","Europäische Union","Einheitliche Union","Euro Union"],a:1},
+{id:161,cat:"Europa",q:"In welchem anderen Land gibt es eine große deutschsprachige Bevölkerung?",o:["Tschechien","Norwegen","Spanien","Österreich"],a:3},
+{id:162,cat:"Europa",q:"Welches Land ist ein Nachbarland von Deutschland? (C)",o:["Finnland","Dänemark","Norwegen","Schweden"],a:1},
+{id:163,cat:"Geschichte",q:"Wie wird der Beitritt der DDR zur Bundesrepublik im Jahr 1990 allgemein genannt?",o:["NATO-Osterweiterung","EU-Osterweiterung","Europäische Gemeinschaft","Deutsche Wiedervereinigung"],a:3},
+{id:164,cat:"Europa",q:"Welches Land ist ein Nachbarland von Deutschland? (D)",o:["Spanien","Bulgarien","Norwegen","Luxemburg"],a:3},
+{id:165,cat:"Europa",q:"Das Europäische Parlament wird regelmäßig gewählt, nämlich alle ...",o:["5 Jahre.","6 Jahre.","7 Jahre.","8 Jahre."],a:0},
+{id:166,cat:"Europa",q:"Was bedeutet der Begriff europäische Integration?",o:["Damit sind amerikanische Einwanderer in Europa gemeint.","Der Begriff meint den Einwanderungsstopp nach Europa.","Damit sind europäische Auswanderer in den USA gemeint.","Der Begriff meint den Zusammenschluss europäischer Staaten zur EU."],a:3},
+{id:167,cat:"Europa",q:"Wer wird bei der Europawahl gewählt?",o:["die Europäische Kommission","die Länder, die in die EU eintreten dürfen","die europäische Verfassung","die Abgeordneten des Europäischen Parlaments"],a:3},
+{id:168,cat:"Europa",q:"Welches Land ist ein Nachbarland von Deutschland? (E)",o:["Tschechien","Bulgarien","Griechenland","Portugal"],a:0},
+{id:169,cat:"Europa",q:"Wo ist der Sitz des Europäischen Parlaments?",o:["London","Paris","Berlin","Strassburg"],a:3},
+{id:170,cat:"Europa",q:"Wie viele Mitgliedstaaten hat die EU heute?",o:["21","23","25","27"],a:3},
+{id:171,cat:"Europa",q:"Was war der Inhalt der Römischen Verträge (1957)?",o:["Beitritt Deutschlands zur NATO","Gründung der Europäischen Wirtschaftsgemeinschaft (EWG)","Verpflichtung Deutschlands zu Reparationsleistungen","Festlegung der Oder-Neisse-Linie als Ostgrenze"],a:1},
+{id:172,cat:"Europa",q:"An welchen Orten arbeitet das Europäische Parlament?",o:["Paris, London und Den Haag","Strassburg, Luxemburg und Brüssel","Rom, Bern und Wien","Bonn, Zürich und Mailand"],a:1},
+{id:173,cat:"Europa",q:"Durch welche Verträge schloss sich die Bundesrepublik mit anderen Staaten zur Europäischen Wirtschaftsgemeinschaft zusammen?",o:["durch die Hamburger Verträge","durch die Römischen Verträge","durch die Pariser Verträge","durch die Londoner Verträge"],a:1},
+{id:174,cat:"Europa",q:"Seit wann bezahlt man in Deutschland mit dem Euro in bar?",o:["1995","1998","2002","2005"],a:2},
+{id:175,cat:"Europa",q:"Die Bundesrepublik Deutschland ist ein Gründungsmitglied ...",o:["des Nordatlantikpakts (NATO).","der Vereinten Nationen (VN).","der Europäischen Union (EU).","des Warschauer Pakts."],a:0},
+{id:176,cat:"Gesellschaft",q:"Frau Seger bekommt ein Kind. Was muss sie tun, um Elterngeld zu erhalten?",o:["Sie muss an ihre Krankenkasse schreiben.","Sie muss nichts tun, denn sie bekommt automatisch Elterngeld.","Sie muss einen Antrag bei der Elterngeldstelle stellen.","Sie muss das Arbeitsamt um Erlaubnis bitten."],a:2},
+{id:177,cat:"Gesellschaft",q:"Wer entscheidet, ob ein Kind in Deutschland in den Kindergarten geht?",o:["der Staat","die Bundesländer","die Eltern","die Schulen"],a:2},
+{id:178,cat:"Demokratie",q:"Maik und Sybille wollen eine Demonstration auf der Straße abhalten. Was müssen sie vorher tun?",o:["Sie müssen nichts tun.","Sie müssen die Demonstration anmelden.","Demonstrationen sind in Deutschland verboten.","Nur Vereine dürfen demonstrieren."],a:1},
+{id:179,cat:"Gesellschaft",q:"Welchen Schulabschluss braucht man, um an einer Universität in Deutschland ein Studium zu beginnen?",o:["das Abitur","ein Diplom","die Prokura","eine Gesellenprüfung"],a:0},
+{id:180,cat:"Gesellschaft",q:"Wer darf in Deutschland nicht als Paar zusammenleben?",o:["Hans (20) und Marie (19)","Tom (20) und Klaus (45)","Sofie (35) und Lisa (40)","Anne (13) und Tim (25)"],a:3},
+{id:181,cat:"Gesellschaft",q:"Ab welchem Alter ist man in Deutschland volljährig?",o:["16","18","19","21"],a:1},
+{id:182,cat:"Gesellschaft",q:"Wie heißt der gesetzliche Schutz vor und nach der Geburt eines Kindes?",o:["Elternzeit","Geburtsvorbereitung","Mutterschutz","Wochenbett"],a:2},
+{id:183,cat:"Gesellschaft",q:"Die Erziehung der Kinder ist in Deutschland vor allem Aufgabe ...",o:["des Staates.","der Eltern.","der Grosseltern.","der Schulen."],a:1},
+{id:184,cat:"Gesellschaft",q:"In Deutschland hat man die besten Chancen auf einen gut bezahlten Arbeitsplatz, wenn man ...",o:["katholisch ist.","gut ausgebildet ist.","eine Frau ist.","Mitglied einer Partei ist."],a:1},
+{id:185,cat:"Gesellschaft",q:"Wenn man in Deutschland ein Kind schlägt ...",o:["geht das niemanden etwas an.","geht das nur die Familie etwas an.","kann man dafür nicht bestraft werden.","kann man dafür bestraft werden."],a:3},
+{id:186,cat:"Gesellschaft",q:"In Deutschland darf man zur gleichen Zeit ...",o:["nur mit einem Partner verheiratet sein.","mehrere Ehepartner gleichzeitig haben.","nicht wieder heiraten, wenn man einmal verheiratet war.","als Frau nicht wieder heiraten, wenn ihr Mann gestorben ist."],a:0},
+{id:187,cat:"Gesellschaft",q:"Wo müssen Sie sich anmelden, wenn Sie in Deutschland umziehen?",o:["beim Einwohnermeldeamt","beim Standesamt","beim Ordnungsamt","beim Gewerbeamt"],a:0},
+{id:188,cat:"Gesellschaft",q:"Was bedeutet das Trennungsjahr bei einer Scheidung in Deutschland?",o:["Der Scheidungsprozess dauert ein Jahr.","Mann und Frau sind ein Jahr verheiratet, dann ist die Scheidung möglich.","Das Besuchsrecht für die Kinder gilt ein Jahr.","Mann und Frau führen mindestens ein Jahr getrennt ihr eigenes Leben."],a:3},
+{id:189,cat:"Gesellschaft",q:"Bei Erziehungsproblemen können Eltern in Deutschland Hilfe erhalten vom ...",o:["Ordnungsamt.","Schulamt.","Jugendamt.","Gesundheitsamt."],a:2},
+{id:190,cat:"Gesellschaft",q:"Ein Ehepaar möchte ein Restaurant eröffnen. Was braucht es dazu?",o:["eine Erlaubnis der Polizei","eine Genehmigung einer Partei","eine Genehmigung des Einwohnermeldeamts","eine Gaststättenerlaubnis von der zuständigen Behörde"],a:3},
+{id:191,cat:"Gesellschaft",q:"Eine erwachsene Frau möchte das Abitur nachholen. Das kann sie an ... tun.",o:["einer Hochschule.","einem Abendgymnasium.","einer Hauptschule.","einer Privatuniversität."],a:1},
+{id:192,cat:"Gesellschaft",q:"Was darf das Jugendamt in Deutschland?",o:["Es entscheidet, welche Schule das Kind besucht.","Es kann ein Kind, das geschlagen wird, aus der Familie nehmen.","Es bezahlt das Kindergeld an die Eltern.","Es kontrolliert, ob das Kind einen Kindergarten besucht."],a:1},
+{id:193,cat:"Gesellschaft",q:"Das Berufsinformationszentrum BIZ hilft bei der ...",o:["Rentenberechnung.","Lehrstellensuche.","Steuererklärung.","Krankenversicherung."],a:1},
+{id:194,cat:"Gesellschaft",q:"In Deutschland hat ein Kind in der Schule ...",o:["Recht auf unbegrenzte Freizeit.","Wahlfreiheit für alle Fächer.","Anspruch auf Schulgeld.","Anwesenheitspflicht."],a:3},
+{id:195,cat:"Demokratie",q:"Was bedeutet in Deutschland der Grundsatz der Gleichbehandlung?",o:["Niemand darf z.B. wegen einer Behinderung benachteiligt werden.","Man darf andere Personen benachteiligen, wenn ausreichende Gründe vorliegen.","Niemand darf gegen Personen klagen.","Es ist für alle Gesetz, benachteiligten Gruppen jährlich Geld zu spenden."],a:0},
+{id:196,cat:"Gesellschaft",q:"In Deutschland sind Jugendliche ab 14 Jahren strafmündig. Jugendliche, die 14 Jahre und älter sind und gegen Strafgesetze verstossen ...",o:["werden bestraft.","werden wie Erwachsene behandelt.","teilen die Strafe mit ihren Eltern.","werden nicht bestraft."],a:0},
+{id:197,cat:"Gesellschaft",q:"Zu welchem Fest tragen Menschen in Deutschland bunte Kostüme und Masken?",o:["am Rosenmontag","am Maifeiertag","beim Oktoberfest","an Pfingsten"],a:0},
+{id:198,cat:"Gesellschaft",q:"Wohin muss man in Deutschland zuerst gehen, wenn man heiraten möchte?",o:["zum Einwohnermeldeamt","zum Ordnungsamt","zur Agentur für Arbeit","zum Standesamt"],a:3},
+{id:199,cat:"Gesellschaft",q:"Wann beginnt die gesetzliche Nachtruhe in Deutschland?",o:["wenn die Sonne untergeht","um 22 Uhr","wenn die Nachbarn schlafen gehen","um 0 Uhr, Mitternacht"],a:1},
+{id:200,cat:"Demokratie",q:"Eine volljährige Frau lebt mit ihrem Freund zusammen. Die Eltern finden das nicht gut. Was können die Eltern tun?",o:["Sie müssen die Entscheidung der volljährigen Tochter respektieren.","Sie haben das Recht, die Tochter zurückzuholen.","Sie können zur Polizei gehen und die Tochter anzeigen.","Sie suchen einen anderen Mann für die Tochter."],a:0},
+{id:201,cat:"Gesellschaft",q:"Eine junge Frau will den Führerschein machen. Ihre Muttersprache ist nicht Deutsch. Was ist richtig?",o:["Sie muss mindestens zehn Jahre in Deutschland leben.","Sie kann die Theorie-Prüfung vielleicht in ihrer Muttersprache machen.","Wenn sie kein Deutsch kann, darf sie keinen Führerschein haben.","Sie muss den Führerschein in ihrem Heimatland machen."],a:1},
+{id:202,cat:"Gesellschaft",q:"In Deutschland haben Kinder ab drei Jahren bis zur Einschulung einen Anspruch auf ...",o:["monatliches Taschengeld.","einen Kindergartenplatz.","einen Platz in einem Sportverein.","einen Ferienpass."],a:1},
+{id:203,cat:"Gesellschaft",q:"Die Volkshochschule in Deutschland ist eine Einrichtung ...",o:["für den Religionsunterricht.","nur für Jugendliche.","zur Weiterbildung.","nur für Rentner."],a:2},
+{id:204,cat:"Gesellschaft",q:"Was ist in Deutschland ein Brauch zu Weihnachten?",o:["bunte Eier verstecken","einen Tannenbaum schmücken","sich mit Masken und Kostümen verkleiden","Kürbisse vor die Tür stellen"],a:1},
+{id:205,cat:"Gesellschaft",q:"Welche Lebensform ist in Deutschland nicht erlaubt?",o:["Mann und Frau sind geschieden und leben mit neun Partnern zusammen.","Zwei Frauen leben zusammen.","Ein alleinerziehender Vater lebt mit seinen Kindern zusammen.","Ein Mann ist mit zwei Frauen zur selben Zeit verheiratet."],a:3},
+{id:206,cat:"Demokratie",q:"Sie haben in Deutschland absichtlich einen Brief an eine andere Person geöffnet. Was haben Sie nicht beachtet?",o:["das Schweigerecht","das Briefgeheimnis","die Schweigepflicht","die Meinungsfreiheit"],a:1},
+{id:207,cat:"Gesellschaft",q:"Was braucht man in Deutschland für eine Ehescheidung?",o:["die Einwilligung der Eltern","ein Attest eines Arztes","die Einwilligung der Kinder","die Unterstützung eines Anwalts"],a:3},
+{id:208,cat:"Gesellschaft",q:"Was sollten Sie tun, wenn Sie von einem Ansprechpartner einer deutschen Behörde schlecht behandelt werden?",o:["Ich kann nichts tun.","Ich muss mir diese Behandlung gefallen lassen.","Ich drohe der Person.","Ich kann mich beim Behördenleiter beschweren."],a:3},
+{id:209,cat:"Demokratie",q:"Eine Frau mit zweijährigem Kind bewirbt sich um eine Stelle. Was ist Diskriminierung?",o:["Sie bekommt die Stelle nicht, weil sie kein Englisch spricht.","Sie bekommt die Stelle nicht wegen zu hoher Gehaltsvorstellungen.","Sie bekommt die Stelle nicht, weil sie keine Erfahrungen hat.","Sie bekommt die Stelle nicht, weil sie Mutter ist."],a:3},
+{id:210,cat:"Demokratie",q:"Ein Mann im Rollstuhl bekommt eine Stelle als Buchhalter nicht. Was ist Diskriminierung?",o:["Er bekommt die Stelle nicht, weil er im Rollstuhl sitzt.","Er bekommt die Stelle nicht, weil er keine Erfahrung hat.","Er bekommt die Stelle nicht wegen zu hoher Gehaltsvorstellungen.","Er bekommt die Stelle nicht, weil er kein Englisch spricht."],a:0},
+{id:211,cat:"Gesellschaft",q:"In den meisten Mietshäusern in Deutschland gibt es eine Hausordnung. Was steht darin?",o:["Regeln für die Benutzung öffentlicher Verkehrsmittel.","alle Mieter im Haus.","Regeln, an die sich alle Bewohner halten müssen.","die Adresse des nächsten Ordnungsamtes."],a:2},
+{id:212,cat:"Gesellschaft",q:"Wenn Sie sich in Deutschland gegen einen falschen Steuerbescheid wehren wollen, müssen Sie ...",o:["nichts machen.","den Bescheid wegwerfen.","Einspruch einlegen.","warten, bis ein anderer Bescheid kommt."],a:2},
+{id:213,cat:"Demokratie",q:"Zwei Freunde werden wegen ihrer dunklen Hautfarbe nicht ins Schwimmbad gelassen. Welches Recht wird verletzt?",o:["Meinungsfreiheit","Gleichbehandlung","Versammlungsfreiheit","Freizügigkeit"],a:1},
+{id:214,cat:"Gesellschaft",q:"Welches Ehrenamt müssen deutsche Staatsbürger übernehmen, wenn sie dazu aufgefordert werden?",o:["Vereinstrainer","Bibliotheksaufsicht","Wahlhelfer","Lehrer"],a:2},
+{id:215,cat:"Gesellschaft",q:"Was tun Sie, wenn Sie eine falsche Rechnung von einer deutschen Behörde bekommen?",o:["Ich lasse die Rechnung liegen.","Ich lege Widerspruch bei der Behörde ein.","Ich schicke die Rechnung zurück.","Ich gehe mit der Rechnung zum Finanzamt."],a:1},
+{id:216,cat:"Gesellschaft",q:"Was man für die Arbeit können muss, ändert sich schnell. Was kann man tun?",o:["Es ist egal, was man lernt.","Kinder lernen in der Schule alles. Danach muss man nicht weiter lernen.","Erwachsene müssen auch nach der Ausbildung immer weiter lernen.","Alle müssen früher aufhören zu arbeiten."],a:2},
+{id:217,cat:"Gesellschaft",q:"Was muss Frau Frost nicht von ihrem Festanstellungsgehalt bezahlen?",o:["Umsatzsteuer","Lohnsteuer","Beiträge zur Arbeitslosenversicherung","Beiträge zur Renten- und Krankenversicherung"],a:0},
+{id:218,cat:"Gesellschaft",q:"Welche Organisation in einer Firma hilft den Arbeitnehmern bei Problemen mit dem Arbeitgeber?",o:["der Betriebsrat","der Betriebsprüfer","die Betriebsgruppe","das Betriebsmanagement"],a:0},
+{id:219,cat:"Gesellschaft",q:"Sie möchten Ihr Arbeitsverhältnis beenden. Was müssen Sie beachten?",o:["die Gehaltszahlungen","die Arbeitszeit","die Kündigungsfrist","die Versicherungspflicht"],a:2},
+{id:220,cat:"Geschichte",q:"Woraus begründet sich Deutschlands besondere Verantwortung für Israell?",o:["aus der Mitgliedschaft in der Europäischen Union (EU)","aus den nationalsozialistischen Verbrechen gegen Juden","aus dem Grundgesetz der Bundesrepublik Deutschland","aus der christlichen Tradition"],a:1},
+{id:221,cat:"Demokratie",q:"Ein Mann mit dunkler Hautfarbe bekommt eine Stelle nicht. Was ist Diskriminierung?",o:["seine Deutschkenntnisse sind zu gering.","er hat zu hohe Gehaltsvorstellungen.","er hat eine dunkle Haut.","er hat keine Erfahrungen im Beruf."],a:2},
+{id:222,cat:"Gesellschaft",q:"Sie haben in Deutschland einen Fernseher gekauft. Er funktioniert nicht. Was können Sie machen?",o:["eine Anzeige schreiben","den Fernseher reklamieren","das Gerät ungefragt austauschen","die Garantie verlängern"],a:1},
+{id:223,cat:"Gesellschaft",q:"Warum muss man bei der Steuererklärung angeben, ob man zu einer Kirche gehört?",o:["weil das für die Statistik wichtig ist.","weil es eine Kirchensteuer gibt, die an die Einkommensteuer geknüpft ist.","weil man mehr Steuern zahlen muss, wenn man nicht zu einer Kirche gehört.","weil die Kirche für die Steuererklärung verantwortlich ist."],a:1},
+{id:224,cat:"Gesellschaft",q:"Die Menschen in Deutschland leben nach dem Grundsatz der religiösen Toleranz. Was bedeutet das?",o:["Es dürfen keine Moscheen gebaut werden.","Alle Menschen glauben an Gott.","Jeder kann glauben, was er möchte.","Der Staat entscheidet, an welchen Gott die Menschen glauben."],a:2},
+{id:225,cat:"Gesellschaft",q:"Was ist in Deutschland ein Brauch an Ostern?",o:["Kürbisse vor die Tür stellen","einen Tannenbaum schmücken","Eier bemalen","Raketen in die Luft schiessen"],a:2},
+{id:226,cat:"Gesellschaft",q:"Pfingsten ist ein ...",o:["christlicher Feiertag.","deutscher Gedenktag.","internationaler Trauertag.","bayerischer Brauch."],a:0},
+{id:227,cat:"Gesellschaft",q:"Welche Religion hat die europäische und deutsche Kultur geprägt?",o:["der Hinduismus","das Christentum","der Buddhismus","der Islam"],a:1},
+{id:228,cat:"Gesellschaft",q:"In Deutschland nennt man die letzten vier Wochen vor Weihnachten ...",o:["den Buss- und Bettag.","das Erntedankfest.","die Adventszeit.","Allerheiligen."],a:2},
+{id:229,cat:"Geschichte",q:"Aus welchem Land sind die meisten Migranten nach Deutschland gekommen?",o:["Italien","Polen","Marokko","Türkei"],a:3},
+{id:230,cat:"Geschichte",q:"In der DDR lebten vor allem Migranten aus ...",o:["Vietnam, Polen, Mosambik.","Frankreich, Rumänien, Somalia.","Chile, Ungarn, Simbabwe.","Nordkorea, Mexiko, Ägypten."],a:0},
+{id:231,cat:"Geschichte",q:"Ausländische Arbeitnehmer, die in den 50er und 60er Jahren angeworben wurden, nannte man ...",o:["Schwarzarbeiter","Gastarbeiter","Zeitarbeiter","Schichtarbeiter"],a:1},
+{id:232,cat:"Geschichte",q:"Aus welchem Land kamen die ersten Gastarbeiter in die Bundesrepublik Deutschland?",o:["Italien","Spanien","Portugal","Türkei"],a:0},
+{id:233,cat:"Geschichte",q:"Was passierte am 9. November 1938 in Deutschland?",o:["Mit dem Angriff auf Polen beginnt der Zweite Weltkrieg.","Die Nationalsozialisten verlieren eine Wahl.","Jüdische Geschäfte und Synagogen werden durch Nationalsozialisten zerstört.","Hitler wird Reichspräsident."],a:2},
+{id:234,cat:"Geschichte",q:"Claus Schenk Graf von Stauffenberg wurde bekannt durch ...",o:["eine Goldmedaille bei den Olympischen Spielen 1936.","den Bau des Reichstagsgebäudes.","den Aufbau der Wehrmacht.","das Attentat auf Hitler am 20. Juli 1944."],a:3},
+{id:235,cat:"Geschichte",q:"Woran erinnern die sogenannten Stolpersteine in Deutschland?",o:["an berühmte deutsche Politiker","an die Opfer des Nationalsozialismus","an Verkehrstote","an bekannte jüdische Musiker"],a:1},
+{id:236,cat:"Gesellschaft",q:"Soziale Marktwirtschaft bedeutet, die Wirtschaft ...",o:["steuert sich allein nach Angebot und Nachfrage.","wird vom Staat geplant und gesteuert.","richtet sich nach der Nachfrage im Ausland.","richtet sich nach Angebot und Nachfrage, aber der Staat sorgt für einen sozialen Ausgleich."],a:3},
+{id:237,cat:"Geschichte",q:"Welches Land war keine Alliierte Besatzungsmacht in Deutschland?",o:["USA","Sowjetunion","Frankreich","Japan"],a:3},
+{id:238,cat:"Geschichte",q:"Vom Juni 1948 bis zum Mai 1949 wurden Bürger von West-Berlin durch eine Luftbrücke versorgt. Warum?",o:["Für Frankreich war die Versorgung mit dem Flugzeug günstiger.","Die amerikanischen Soldaten hatten beim Landtransport Angst.","Für Großbritannien war die Versorgung über die Luftbrücke schneller.","Die Sowjetunion unterbrach den gesamten Verkehr auf dem Landwege."],a:3},
+{id:239,cat:"Geschichte",q:"Vor wie vielen Jahren gab es erstmals eine jüdische Gemeinde auf dem Gebiet des heutigen Deutschlands?",o:["vor etwa 300 Jahren","vor etwa 700 Jahren","vor etwa 1150 Jahren","vor etwa 1700 Jahren"],a:3},
+{id:240,cat:"Geschichte",q:"Welcher Krieg dauerte von 1939 bis 1945?",o:["der Erste Weltkrieg","der Zweite Weltkrieg","der Vietnamkrieg","der Golfkrieg"],a:1},
+{id:241,cat:"Geschichte",q:"Das Dritte Reich war eine ...",o:["Diktatur.","Demokratie.","Monarchie.","Räterepublik."],a:0},
+{id:242,cat:"Geschichte",q:"In welchem Militärbündnis war die DDR Mitglied?",o:["in der NATO","im Rheinbund","im Warschauer Pakt","im Europabundnis"],a:2},
+{id:243,cat:"Geschichte",q:"Wann war der Zweite Weltkrieg zu Ende?",o:["1933","1945","1949","1961"],a:1},
+{id:244,cat:"Geschichte",q:"Welche Städte haben die größten jüdischen Gemeinden in Deutschland?",o:["Berlin und München","Hamburg und Essen","Nürnberg und Stuttgart","Worms und Speyer"],a:0},
+{id:245,cat:"Geschichte",q:"Wer darf bei den jüdischen Makkabi-Sportvereinen Mitglied werden?",o:["nur Deutsche","nur Israellis","nur religiöse Menschen","alle Menschen"],a:3},
+{id:246,cat:"Geschichte",q:"Welche Handlung mit Bezug auf den Staat Israell ist in Deutschland verboten?",o:["Die Politik Israells öffentlich kritisieren.","Das Aufhängen einer israelischen Flagge.","Eine Diskussion über die Politik Israells.","Der öffentliche Aufruf zur Vernichtung Israells."],a:3},
+{id:247,cat:"Gesellschaft",q:"Bei Erziehungsproblemen gehen Sie in Deutschland ...",o:["zum Arzt.","zum Gesundheitsamt.","zum Einwohnermeldeamt.","zum Jugendamt."],a:3},
+{id:248,cat:"Gesellschaft",q:"Wann kommt es in Deutschland zu einem Prozess vor Gericht?",o:["Wenn jemand zu einer anderen Religion übertritt.","Wenn jemand eine Straftat begangen hat und angeklagt wird.","Wenn jemand eine andere Meinung als die Regierung vertritt.","Wenn jemand sein Auto falsch geparkt hat."],a:1},
+{id:249,cat:"Gesellschaft",q:"Wie nennt man in Deutschland ein Verfahren vor einem Gericht?",o:["Programm","Prozedur","Protokoll","Prozess"],a:3},
+{id:250,cat:"Politik",q:"In Deutschland kann ein Regierungswechsel in einem Bundesland Auswirkungen auf die Bundespolitik haben. Das Regieren wird ...",o:["schwieriger, wenn sich dadurch die Mehrheit im Bundestag ändert.","leichter, wenn dadurch neu Parteien in den Bundesrat kommen.","schwieriger, wenn dadurch die Mehrheit im Bundesrat verändert wird.","leichter, wenn es sich um ein reiches Bundesland handelt."],a:2},
+{id:251,cat:"Wahlen",q:"Wenn Sie bei einer Bundestagswahl wählen dürfen, heißt das ...",o:["aktive Wahlkampagne.","aktives Wahlverfahren.","aktiver Wahlkampf.","aktives Wahlrecht."],a:3},
+{id:252,cat:"Wahlen",q:"Wie oft gibt es normalerweise Bundestagswahlen in Deutschland?",o:["alle drei Jahre","alle vier Jahre","alle fünf Jahre","alle sechs Jahre"],a:1},
+{id:253,cat:"Wahlen",q:"Vom Volk gewählt wird in Deutschland ...",o:["der Bundeskanzler.","der Ministerpräsident eines Bundeslandes.","der Bundestag.","der Bundespräsident."],a:2},
+{id:254,cat:"Staat",q:"Womit kann man in der Bundesrepublik Deutschland geehrt werden, wenn man eine besondere Leistung erbracht hat?",o:["Bundesadler","Bundesverdienstkreuz","Vaterlandischen Verdienstorden","Ehrentitel Held der DDR"],a:1},
+{id:255,cat:"Demokratie",q:"Zu einem demokratischen Rechtsstaat gehört es nicht, dass ...",o:["Menschen sich kritisch über die Regierung äußern können.","Bürger friedlich demonstrieren dürfen.","Menschen von einer Privatpolizei ohne Grund verhaftet werden.","jemand ein Verbrechen begeht und deshalb verhaftet wird."],a:2},
+{id:256,cat:"Gesellschaft",q:"Was ist die Arbeit eines Richters in Deutschland?",o:["Deutschland regieren","Recht sprechen","Pläne erstellen","Gesetze erlassen"],a:1},
+{id:257,cat:"Demokratie",q:"Ein Richter gehört in Deutschland zur ...",o:["vollziehenden Gewalt.","rechtsprechenden Gewalt.","planenden Gewalt.","gesetzgebenden Gewalt."],a:1},
+{id:258,cat:"Wahlen",q:"Wahlen in Deutschland gewinnt die Partei, die ...",o:["die meisten Stimmen bekommt.","die meisten Männer mehrheitlich gewählt haben.","die meisten Stimmen bei den Arbeitern bekommen hat.","die meisten Erststimmen für ihren Kanzlerkandidaten erhalten hat."],a:0},
+{id:259,cat:"Politik",q:"Wenn Abgeordnete im Deutschen Bundestag ihre Fraktion wechseln ...",o:["kann die Regierung ihre Mehrheit verlieren.","dürfen sie nicht mehr an den Sitzungen teilnehmen.","muss der Bundespräsident sein Einverständnis geben.","dürfen die Wähler dieser Abgeordneten noch einmal wählen."],a:0},
+{id:260,cat:"Wahlen",q:"Wahlen in Deutschland sind frei bedeutet, dass ...",o:["Alle verurteilten Straftäter nicht wählen dürfen.","Wenn ich wählen möchte, muss mein Arbeitgeber mir frei geben.","Jede Person kann ohne Zwang entscheiden, ob sie wählen möchte und wen.","Ich kann frei entscheiden, wo ich wählen gehe."],a:2},
+{id:261,cat:"Wahlen",q:"Das Wahlsystem in Deutschland ist ein ...",o:["Zensuswahlrecht.","Dreiklassenwahlrecht.","Mehrheits- und Verhältniswahlrecht.","allgemeines Männerwahlrecht."],a:2},
+{id:262,cat:"Wahlen",q:"In einer Demokratie ist eine Funktion von regelmäßigen Wahlen ...",o:["die Bürger zu zwingen, ihre Stimme abzugeben.","nach dem Willen der Wählerrmehrheit den Wechsel der Regierung zu ermöglichen.","im Land bestehende Gesetze beizubehalten.","den Armen mehr Macht zu geben."],a:1},
+{id:263,cat:"Wahlen",q:"Was bekommen wahlberechtigte Bürger in Deutschland vor einer Wahl?",o:["eine Wahlbenachrichtigung von der Gemeinde","eine Wahlerlaubnis vom Bundespräsidenten","eine Benachrichtigung von der Bundesversammlung","eine Benachrichtigung vom Pfarramt"],a:0},
+{id:264,cat:"Wahlen",q:"Warum gibt es die 5 %-Hürde im Wahlgesetz der Bundesrepublik Deutschland?",o:["weil die Programme von kleinen Parteien viele Gemeinsamkeiten haben.","weil Bürger bei vielen kleinen Parteien die Orientierung verlieren können.","weil viele kleine Parteien die Regierungsbildung erschweren.","weil kleine Parteien nicht so viel Geld haben."],a:2},
+{id:265,cat:"Wahlen",q:"Parlamentsmitglieder, die von den Bürgern gewählt werden, nennt man ...",o:["Abgeordnete.","Kanzler.","Botschafter.","Ministerpräsidenten."],a:0},
+{id:266,cat:"Gesellschaft",q:"Was gehört nicht zur gesetzlichen Sozialversicherung? (2)",o:["die gesetzliche Rentenversicherung","die Lebensversicherung","die Arbeitslosenversicherung","die Pflegeversicherung"],a:1},
+{id:267,cat:"Politik",q:"Wer wählt den deutschen Bundeskanzler?",o:["das Volk","die Bundesversammlung","der Bundestag","die Bundesregierung"],a:2},
+{id:268,cat:"Gesellschaft",q:"Was bezahlt man in Deutschland automatisch, wenn man fest angestellt ist? (2)",o:["Sozialversicherung","Sozialhilfe","Kindergeld","Wohngeld"],a:0},
+{id:269,cat:"Politik",q:"Wer beschliesst in Deutschland ein neus Gesetz? (2)",o:["die Regierung","das Parlament","die Gerichte","die Polizei"],a:1},
+{id:270,cat:"Geschichte",q:"Wann wurde die Mauer in Berlin gebaut? (2)",o:["1953","1956","1961","1965"],a:2},
+{id:271,cat:"Gesellschaft",q:"Was ist in Deutschland ein Brauch zu Weihnachten? (2)",o:["bunte Eier verstecken","Kürbisse vor die Tür stellen","sich mit Masken verkleiden","einen Tannenbaum schmücken"],a:3},
+{id:272,cat:"Demokratie",q:"Welches Grundrecht ist in Artikel 1 des Grundgesetzes garantiert? (2)",o:["die Unantastbarkeit der Menschenwürde","das Recht auf Leben","Religionsfreiheit","Meinungsfreiheit"],a:0},
+{id:273,cat:"Demokratie",q:"Was bedeutet Volkssouveränität? Alle Staatsgewalt geht vom ... (2)",o:["Volke aus.","Bundestag aus.","preussischen König aus.","Bundesverfassungsgericht aus."],a:0},
+{id:274,cat:"Wahlen",q:"Für wie viele Jahre wird der Bundestag in Deutschland gewählt? (2)",o:["2 Jahre","3 Jahre","4 Jahre","5 Jahre"],a:2},
+{id:275,cat:"Demokratie",q:"Was ist keine staatliche Gewalt in Deutschland? (2)",o:["Gesetzgebung","Regierung","Presse","Rechtsprechung"],a:2},
+{id:276,cat:"Demokratie",q:"Was bedeutet Rechtsstaat in Deutschland? (2)",o:["Der Staat hat Recht.","Es gibt nur rechte Parteien.","Die Bürger entscheiden über Gesetze.","Der Staat muss die Gesetze einhalten."],a:3},
+{id:277,cat:"Geschichte",q:"Wann waren die Nationalsozialisten in Deutschland an der Macht? (3)",o:["1888 bis 1918","1921 bis 1934","1933 bis 1945","1949 bis 1963"],a:2},
+{id:278,cat:"Geschichte",q:"Welches heutige Bundesland gehörte früher zum Gebiet der DDR? (5)",o:["Hessen","Schleswig-Holstein","Mecklenburg-Vorpommern","Saarland"],a:2},
+{id:279,cat:"Gesellschaft",q:"Wer ist in Deutschland hauptsächlich verantwortlich für die Kindererziehung?",o:["der Staat","die Eltern","die Verwandten","die Schulen"],a:1},
+{id:280,cat:"Europa",q:"Mit dem Beitritt der DDR zur Bundesrepublik gehören die neun Bundesländer nun auch ...",o:["zur Europäischen Union.","zum Warschauer Pakt.","zur OPEC.","zur Europäischen Verteidigungsgemeinschaft."],a:0},
+{id:281,cat:"Geschichte",q:"Welche Städte haben die größten jüdischen Gemeinden in Deutschland? (2)",o:["Berlin und München","Hamburg und Essen","Nürnberg und Stuttgart","Worms und Speyer"],a:0},
+{id:282,cat:"Demokratie",q:"Was bedeutet Rechtsstaat in Deutschland? (3)",o:["Der Staat hat Recht.","Es gibt nur rechte Parteien.","Die Bürger entscheiden über Gesetze.","Der Staat muss die Gesetze einhalten."],a:3},
+{id:283,cat:"Gesellschaft",q:"Die Erziehung der Kinder ist in Deutschland vor allem Aufgabe ... (2)",o:["des Staates.","der Eltern.","der Grosseltern.","der Schulen."],a:1},
+{id:284,cat:"Politik",q:"Wer wählt den Bundeskanzler in Deutschland? (2)",o:["der Bundesrat","die Bundesversammlung","das Volk","der Bundestag"],a:3},
+{id:285,cat:"Gesellschaft",q:"Warum kontrolliert der Staat in Deutschland das Schulwesen? (2)",o:["weil es in Deutschland nur staatliche Schulen gibt","weil alle Schüler einen Schulabschluss haben müssen","weil es in den Bundesländern verschiedene Schulen gibt","weil es nach dem Grundgesetz seine Aufgabe ist"],a:3},
+{id:286,cat:"Geschichte",q:"Vor wie vielen Jahren gab es erstmals eine jüdische Gemeinde in Deutschland? (2)",o:["vor etwa 300 Jahren","vor etwa 700 Jahren","vor etwa 1150 Jahren","vor etwa 1700 Jahren"],a:3},
+{id:287,cat:"Geschichte",q:"Welcher Krieg dauerte von 1939 bis 1945? (2)",o:["der Erste Weltkrieg","der Zweite Weltkrieg","der Vietnamkrieg","der Golfkrieg"],a:1},
+{id:288,cat:"Geschichte",q:"Das Dritte Reich war eine ... (2)",o:["Diktatur.","Demokratie.","Monarchie.","Räterepublik."],a:0},
+{id:289,cat:"Geschichte",q:"In welchem Militärbündnis war die DDR Mitglied? (2)",o:["in der NATO","im Rheinbund","im Warschauer Pakt","im Europabundnis"],a:2},
+{id:290,cat:"Gesellschaft",q:"Die Erziehung der Kinder ist in Deutschland vor allem Aufgabe ... (3)",o:["des Staates.","der Eltern.","der Grosseltern.","der Schulen."],a:1},
+{id:291,cat:"Demokratie",q:"Was bedeutet Volkssouveränität? (3)",o:["Der König herrscht über das Volk.","Das Bundesverfassungsgericht steht über der Verfassung.","Die Staatsgewalt geht vom Volke aus.","Die Interessenverbände üben die Souveränität aus."],a:2},
+{id:292,cat:"Demokratie",q:"Was bedeutet Rechtsstaat in Deutschland? (4)",o:["Der Staat hat Recht.","Es gibt nur rechte Parteien.","Die Bürger entscheiden über Gesetze.","Der Staat muss die Gesetze einhalten."],a:3},
+{id:293,cat:"Wahlen",q:"Für wie viele Jahre wird der Bundestag in Deutschland gewählt? (3)",o:["2 Jahre","3 Jahre","4 Jahre","5 Jahre"],a:2},
+{id:294,cat:"Gesellschaft",q:"Was gehört nicht zur gesetzlichen Sozialversicherung? (3)",o:["die gesetzliche Rentenversicherung","die Lebensversicherung","die Arbeitslosenversicherung","die Pflegeversicherung"],a:1},
+{id:295,cat:"Politik",q:"Wer beschliesst in Deutschland ein neus Gesetz? (3)",o:["die Regierung","das Parlament","die Gerichte","die Polizei"],a:1},
+{id:296,cat:"Gesellschaft",q:"Was bezahlt man in Deutschland automatisch, wenn man fest angestellt ist? (3)",o:["Sozialversicherung","Sozialhilfe","Kindergeld","Wohngeld"],a:0},
+{id:297,cat:"Geschichte",q:"Wann wurde die Mauer in Berlin gebaut? (3)",o:["1953","1956","1961","1965"],a:2},
+{id:298,cat:"Gesellschaft",q:"Was ist in Deutschland ein Brauch an Ostern? (2)",o:["Kürbisse vor die Tür stellen","einen Tannenbaum schmücken","bunte Eier bemalen","Raketen in die Luft schiessen"],a:2},
+{id:299,cat:"Demokratie",q:"Welches Grundrecht ist in Artikel 1 des Grundgesetzes garantiert? (3)",o:["die Unantastbarkeit der Menschenwürde","das Recht auf Leben","Religionsfreiheit","Meinungsfreiheit"],a:0},
+{id:300,cat:"Demokratie",q:"Was verbietet das deutsche Grundgesetz? (2)",o:["Militärdienst","Zwangsarbeit","freie Berufswahl","Arbeit im Ausland"],a:1}
+];
+var CATS=[...new Set(Q.map(function(q){return q.cat}))];
+
+var TRANS = {};
+// Question translations (id -> {qt, ot:[...]})
+// Generated from BAMF official translations
+[
+[1,"In Germany, people may openly criticise the government because ...",["freedom of religion applies.","people pay taxes.","people have the right to vote.","freedom of expression applies."]],
+[2,"Parents may decide until age 14 whether their child attends ... at school.",["history","religious education","civics","language class"]],
+[3,"Germany is a constitutional state. What does this mean?",["Everyone including the state must obey the law.","The state need not follow the law.","Only Germans must follow the law.","Courts make the laws."]],
+[4,"Which right is a fundamental right in Germany?",["gun ownership","the right of the stronger","freedom of opinion","vigilante justice"]],
+[5,"Elections in Germany are free. What does that mean?",["You may accept money to vote for someone.","Voters cannot be pressured to vote a certain way.","Only people never imprisoned may vote.","All eligible voters must vote."]],
+[6,"What is the German constitution called?",["People's Law","Federal Law","German Law","Basic Law"]],
+[7,"Which right is a fundamental right under the German constitution?",["Freedom of belief and conscience","Entertainment","Work","Housing"]],
+[8,"What is NOT in the German Basic Law?",["Human dignity is inviolable.","Everyone should have the same amount of money.","Everyone may express their opinion.","All are equal before the law."]],
+[9,"Which fundamental right applies only to foreigners in Germany?",["protection of family","human dignity","asylum","freedom of opinion"]],
+[10,"What is compatible with the German Basic Law?",["corporal punishment","torture","the death penalty","a fine"]],
+[11,"What is the German constitution called?",["Basic Law","Federal Constitution","Legal Code","Constitutional Treaty"]],
+[12,"A party wants to abolish press freedom. Is that possible?",["Yes if over half of MPs agree.","Yes but two thirds must agree.","No - press freedom is a fundamental right.","No - only the Bundesrat can do that."]],
+[13,"In parliament 'opposition' refers to ...",["the governing parties.","all MPs not in the governing party.","the group with the most MPs.","all parties above the 5% threshold."]],
+[14,"Freedom of opinion in Germany means for example that I ...",["may insult passers-by.","can express my opinion online.","may display Nazi symbols publicly.","may only speak if I agree with the government."]],
+[15,"What does the German Basic Law prohibit?",["military service","forced labour","free career choice","working abroad"]],
+[16,"When is freedom of opinion restricted in Germany?",["when spreading false claims about individuals","when criticising the government","when discussing religions","when criticising the state"]],
+[17,"German laws prohibit ...",["residents' freedom of opinion.","citizens' petitions.","residents' freedom of assembly.","unequal treatment of citizens by the state."]],
+[18,"Which right is guaranteed in Article 1 of the Basic Law?",["inviolability of human dignity","right to life","freedom of religion","freedom of opinion"]],
+[19,"What is meant by the right of freedom of movement in Germany?",["You may choose your own place of residence.","You can change your profession.","You may choose a different religion.","You may only move around lightly clothed."]],
+[20,"A party aims to establish a dictatorship. It is then ...",["tolerant.","rule-of-law oriented.","law-abiding.","unconstitutional."]],
+[21,"What form of government does Germany have?",["Monarchy","Dictatorship","Republic","Principality"]],
+[22,"How many federal states does Germany have?",["14","15","16","17"]],
+[23,"Which is NOT a German federal state?",["North Rhine-Westphalia","Alsace-Lorraine","Mecklenburg-Western Pomerania","Saxony-Anhalt"]],
+[24,"Germany is ...",["a communist republic.","a democratic and social federal state.","a capitalist social monarchy.","a social socialist federal state."]],
+[25,"How does the German national anthem begin?",["People hear the signals ...","Unity and justice and freedom ...","Joy beautiful spark of divinity ...","Germany united fatherland ..."]],
+[26,"Who elects the Bundestag members in Germany?",["the military","the economy","the eligible voters","the administration"]],
+[27,"Which animal is Germany's heraldic animal?",["Lion","Eagle","Bear","Horse"]],
+[28,"What is NOT a feature of our democracy?",["regular elections","press censorship","freedom of opinion","multiple parties"]],
+[29,"The cooperation of parties to form a government is called ...",["unity.","coalition.","ministry.","parliamentary group."]],
+[30,"What is NOT a branch of state power in Germany?",["legislature","government","the press","judiciary"]],
+[31,"Which statement is correct about Germany?",["State and religious communities are separated.","Religious communities form the state.","The state depends on religious communities.","State and religious communities are one."]],
+[32,"What is Germany NOT?",["a democracy","a constitutional state","a monarchy","a welfare state"]],
+[33,"How does the German state finance social security?",["church taxes","social contributions","donations","club fees"]],
+[34,"Which measure creates social security in Germany?",["health insurance","car insurance","building insurance","liability insurance"]],
+[35,"What are the heads of government of most German states called?",["First Minister","Prime Minister","Senator","Minister-President"]],
+[36,"The Federal Republic of Germany is a democratic and social ...",["confederation.","federal state.","confederacy.","centralised state."]],
+[37,"What does every German federal state have?",["its own foreign minister","its own currency","its own army","its own government"]],
+[38,"Why is there more than one party in a democracy?",["to represent different opinions of citizens","to limit corruption","to prevent demonstrations","to stimulate economic competition"]],
+[39,"Who passes new laws in Germany?",["the government","the parliament","the courts","the police"]],
+[40,"When can a party be banned in Germany?",["when its campaign is too expensive","when it fights against the constitution","when it criticises the head of state","when it proposes a new direction"]],
+[41,"Who can citizens in Germany NOT directly elect?",["EU Parliament members","the Federal President","state parliament members","Bundestag members"]],
+[42,"Which category does long-term care insurance belong to?",["social insurance","accident insurance","household insurance","liability and fire insurance"]],
+[43,"Which of these IS a German state responsibility?",["building roads and schools","selling food and clothing","giving all residents free newspapers","producing cars and buses"]],
+[44,"Which of these is NOT a German state responsibility?",["paying for everyone's holidays","paying child benefit","supporting museums","promoting athletes"]],
+[45,"Which is NOT a constitutional organ of Germany?",["the Bundesrat","the Federal President","the citizens' assembly","the government"]],
+[46,"Who determines education policy in Germany?",["teachers","the federal states","the Ministry of Family Affairs","universities"]],
+[47,"The economic system in Germany is called ...",["free central economy.","social market economy.","directed central economy.","planned economy."]],
+[48,"What does popular sovereignty mean? All state power derives from ...",["the people.","the Bundestag.","the Prussian king.","the Federal Constitutional Court."]],
+[49,"What does 'constitutional state' mean in Germany?",["The state is always right.","There are only right-wing parties.","Citizens decide on laws.","The state must comply with the laws."]],
+[50,"What is NOT a branch of state power in Germany?",["Legislature","Judiciary","Executive","Directive"]],
+[51,"What does NOT belong to the executive branch in Germany?",["the police","the courts","the tax office","the ministries"]],
+[52,"The Federal Republic of Germany is today structured into ...",["four occupation zones.","an eastern and western state.","16 cantons.","federal government, states and municipalities."]],
+[53,"It is NOT a task of the Bundestag to ...",["draft laws.","control the government.","elect the Chancellor.","form the cabinet."]],
+[54,"What is primarily a federal state responsibility?",["defence policy","foreign policy","economic policy","education policy"]],
+[55,"Why does the state control the school system?",["only state schools exist","all pupils need a certificate","different schools exist per state","the Basic Law requires it"]],
+[56,"What belongs to the Federal President's duties?",["governs the country.","drafts laws.","represents the country.","proposes the Chancellor."]],
+[57,"Where does the Federal Chancellor spend most time?",["in Bonn","in Berlin","at Meseberg Palace","at Bellevue Palace"]],
+[58,"What is the current Federal Chancellor's name?",["Gerhard Schröder","Jürgen Rüttgers","Klaus Wowereit","Friedrich Merz"]],
+[59,"What is Germany's national parliament called?",["Federal Assembly","People's Chamber","Bundestag","Federal Court of Justice"]],
+[60,"What is the name of Germany's current head of state?",["Frank-Walter Steinmeier","Norbert Lammert","Wolfgang Thierse","Edmund Stoiber"]],
+[61,"What does CDU stand for?",["Christian German Union","Club of German Entrepreneurs","Christian German Environmental Protection","Christian Democratic Union"]],
+[62,"What is the Bundeswehr?",["the German police","a German port","a citizens' initiative","the German army"]],
+[63,"What does SPD stand for?",["Socialist Party of Germany","Social Policy Party","Social Democratic Party of Germany","Socially Just Party"]],
+[64,"What does FDP stand for?",["Peaceful Demonstrative Party","Free Germany Party","Leading Democratic Party","Free Democratic Party"]],
+[65,"Which court interprets the Basic Law?",["Higher Regional Court","Local Court","Federal Constitutional Court","Administrative Court"]],
+[66,"Who elects the Federal Chancellor?",["the Bundesrat","the Federal Assembly","the people","the Bundestag"]],
+[67,"Who leads the federal cabinet?",["President of the Bundestag","Federal President","Federal Chancellor","President of the Bundesrat"]],
+[68,"What is the main task of the Federal President?",["governs the country.","drafts laws.","represents the country.","monitors law compliance."]],
+[69,"Who forms the Bundesrat?",["Bundestag members","federal ministers","state government representatives","party members"]],
+[70,"Who elects the Federal President?",["the Federal Assembly","the Bundesrat","the parliament","the Federal Constitutional Court"]],
+[71,"Who is the head of state of Germany?",["the Federal Chancellor","the Federal President","the Bundesrat President","the Bundestag President"]],
+[72,"The parliamentary opposition in the Bundestag ...",["controls the government.","decides who becomes minister.","determines Bundesrat seats.","proposes state premiers."]],
+[73,"What is a party's group of MPs in parliament called?",["association","council of elders","parliamentary group","opposition"]],
+[74,"The federal states participate in federal legislation through ...",["the Bundesrat.","the Federal Assembly.","the Bundestag.","the federal government."]],
+[75,"What does CSU stand for?",["Christian Secure Union","Christian South Bavarian Union","Christian Social Employers' Assoc.","Christian Social Union"]],
+[76,"The more second votes a party gets in a Bundestag election, the ...",["more seats it gets in parliament.","fewer first votes it can have.","more direct candidates enter parliament.","greater the risk of coalition."]],
+[77,"From what age may one vote in Bundestag elections?",["16","18","21","23"]],
+[78,"What applies to most children in Germany?",["compulsory voting","compulsory schooling","duty of confidentiality","religious obligation"]],
+[79,"How can Holocaust denial be punished?",["reduction of benefits","up to 100 community service hours","not at all - it is permitted","up to five years imprisonment or a fine"]],
+[80,"What do permanently employed people automatically pay in Germany?",["social insurance contributions","social welfare","child benefit","housing benefit"]],
+[81,"Who pays for social insurance in Germany?",["employers and employees","only employees","all nationals","only employers"]],
+[82,"What does NOT belong to statutory social insurance?",["statutory pension insurance","life insurance","unemployment insurance","long-term care insurance"]],
+[83,"Trade unions represent ...",["young people.","employees.","pensioners.","employers."]],
+[84,"What is a 'traffic light coalition' in Germany?",["CDU and CSU cooperation","SPD, FDP and Greens in government","CSU, Left and Greens","CDU and SPD cooperation"]],
+[85,"What may NOT be a reason for dismissing a woman in Germany?",["long-term illness","frequent lateness","doing private tasks at work","being pregnant"]],
+[86,"What is one task of election helpers in Germany?",["helping elderly vote in the booth","writing polling cards","passing interim results to media","counting votes after polls close"]],
+[87,"For how many years is the Bundestag elected?",["2 years","4 years","6 years","8 years"]],
+[88,"Who may vote in a German Bundestag election?",["anyone living in Germany who wants to vote","German citizen aged at least 18","anyone living in Germany for 3+ years","German citizen aged at least 21"]],
+[89,"Elections in Germany are ...",["special.","secret.","job-related.","gender-dependent."]],
+[90,"Participating in democratic elections in Germany is ...",["an obligation.","a right.","compulsory.","a burden."]],
+[91,"What does 'active voting right' mean?",["You can be elected.","You must vote.","You can vote.","You must attend the count."]],
+[92,"What minimum % of second votes must parties get to enter the Bundestag?",["3%","4%","5%","6%"]],
+[93,"The minimum vote share to enter the Bundestag is called ...",["5% threshold.","admission limit.","base value.","guideline."]],
+[94,"What principle do German elections follow?",["free, equal, secret.","open, secure, free.","closed, equal, secure.","secure, open, voluntary."]],
+[95,"What is the 5% threshold in Germany?",["voting rule for small parties","attendance check in Bundestag","minimum vote share to enter parliament","attendance check in Bundesrat"]],
+[96,"What is permitted in German elections?",["husband votes for wife","postal ballot","phone vote on election day","children from age 14 may vote"]],
+[97,"A mayor in Germany is ...",["the head of a school.","the boss of a bank.","the head of a municipality.","the chairman of a party."]],
+[98,"Many people work voluntarily in Germany. What does that mean?",["They work as soldiers.","They work unpaid in clubs and associations.","They work in the federal government.","They work in a hospital for pay."]],
+[99,"They want to abolish your bus route. What can you do?",["Join a citizens' initiative for the bus route.","Join a sports club.","Contact the tax office.","Write to the forestry office."]],
+[100,"Who do trade unions represent?",["large companies","small companies","self-employed people","employees"]],
+[101,"You go to the labour court in Germany for ...",["an incorrect utility bill.","unjustified dismissal.","problems with neighbours.","a traffic accident."]],
+[102,"What can I do if unfairly dismissed in Germany?",["keep working and be friendly","pursue a dunning procedure","file an unfair dismissal claim","report employer to police"]],
+[103,"What does a lay judge (Schöffe) do?",["decides with judges on guilt and punishment.","gives citizens legal advice.","issues official documents.","defends the accused."]],
+[104,"Who advises on legal matters and represents people in court?",["a lawyer","a judge","a lay judge","a public prosecutor"]],
+[105,"A judge in Germany belongs to the ...",["judiciary.","executive.","operative.","legislature."]],
+[106,"What is one task of the police in Germany?",["defend the country","monitor citizens","pass laws","monitor compliance with laws"]],
+[107,"What is an example of antisemitic behaviour?",["visiting a Jewish festival","criticising the Israelli government","denying the Holocaust","playing football against Jews"]],
+[108,"Who built the Berlin Wall?",["Great Britain","the Federal Republic of Germany","the GDR","the USA"]],
+[109,"When were the National Socialists under Hitler in power?",["1918 to 1923","1932 to 1950","1933 to 1945","1945 to 1989"]],
+[110,"What happened on 8 May 1945?",["Death of Adolf Hitler","Start of Berlin Wall construction","Election of Adenauer as Chancellor","End of World War II in Europe"]],
+[111,"In which year did Hitler become Reich Chancellor?",["1923","1927","1933","1936"]],
+[112,"The National Socialists established in Germany in 1933 ...",["a dictatorship.","a democratic state.","a monarchy.","a principality."]],
+[113,"What did NOT exist during National Socialism in Germany?",["free elections","press censorship","arbitrary arrests","persecution of Jews"]],
+[114,"What characterised the Nazi state?",["state racism","freedom of opinion","freedom of religion","developing democracy"]],
+[115,"In which year did Nazis destroy synagogues and Jewish shops?",["1925","1930","1938","1945"]],
+[116,"Who was the first Federal Chancellor of Germany?",["Konrad Adenauer","Kurt Georg Kiesinger","Helmut Schmidt","Willy Brandt"]],
+[117,"At which demonstrations did people chant 'We are the people'?",["Monday demonstrations 1989 in GDR","workers uprising 1953 in GDR","1968 demonstrations in West Germany","1985 anti-nuclear demonstrations"]],
+[118,"Which countries were the Allied occupying powers?",["Soviet Union, UK, Poland, Sweden","France, Soviet Union, Italy, Japan","USA, Soviet Union, Spain, Portugal","USA, Soviet Union, UK, France"]],
+[119,"When was the Federal Republic of Germany founded?",["1939","1945","1949","1951"]],
+[120,"What DID exist during National Socialism in Germany?",["right to free personal development","freedom of the press","the banning of parties","protection of human dignity"]],
+[121,"In which occupation zone was the GDR founded?",["American","French","British","Soviet"]],
+[122,"When was the GDR founded?",["1947","1949","1953","1956"]],
+[123,"How many occupation zones were there in Germany after WW2?",["3","4","5","6"]],
+[124,"Which German city was divided into four sectors after WW2?",["Munich","Berlin","Dresden","Frankfurt/Oder"]],
+[125,"How did WW2 officially end in Europe?",["death of Hitler","Germany's unconditional surrender","withdrawal from occupied territories","a revolution in Germany"]],
+[126,"What did Willy Brandt's kneeling in Warsaw in 1970 express?",["submission to the Allies.","asking Poland and Polish Jews for forgiveness.","humility before the Warsaw Pact.","a prayer at the Tomb of the Unknown Soldier."]],
+[127,"What is the Jewish house of worship called?",["Basilica","Mosque","Synagogue","Church"]],
+[128,"When was Germany's 'economic miracle'?",["1940s","1950s","1970s","1980s"]],
+[129,"On what basis was the state of Israell founded?",["a UN resolution","a Zionist Congress resolution","a German government proposal","a USSR proposal"]],
+[130,"What did the 'Iron Curtain' refer to?",["Warsaw Pact isolation from the West.","Northern vs Southern Germany.","Nazi Germany vs the Allies.","Europe vs the USA."]],
+[131,"When was the 1953 GDR uprising commemorated?",["1 May","17 June","20 July","9 November"]],
+[132,"In which year was the Berlin Wall built?",["1953","1956","1959","1961"]],
+[133,"What does GDR stand for?",["Third German Broadcasting","The German Republic","Third German Republic","German Democratic Republic"]],
+[134,"When was the Berlin Wall opened for everyone?",["1987","1989","1992","1995"]],
+[135,"Which current federal state formerly belonged to the GDR?",["Brandenburg","Bavaria","Saarland","Hesse"]],
+[136,"From 1961 to 1989, Berlin was ...",["without a mayor.","an independent state.","divided by a wall.","only accessible by plane."]],
+[137,"On 3 October Germany celebrates the Day of German ...",["Unity.","Nation.","Federal States.","Cities."]],
+[138,"Which current federal state formerly belonged to the GDR (2)?",["Hesse","Saxony-Anhalt","North Rhine-Westphalia","Saarland"]],
+[139,"Why is autumn 1989 in the GDR called 'The Turn'?",["The GDR changed from dictatorship to democracy.","from market economy to socialism.","from monarchy to social democracy.","from religious to communist state."]],
+[140,"Which current federal state formerly belonged to the GDR (3)?",["Thuringia","Hesse","Bavaria","Bremen"]],
+[141,"Which current federal state formerly belonged to the GDR (4)?",["Bavaria","Lower Saxony","Saxony","Baden-Württemberg"]],
+[142,"The Stasi in the GDR was ...",["the parliament.","the Ministry for State Security.","a ruling party.","the Ministry of Public Education."]],
+[143,"Which list contains only former GDR states?",["Lower Saxony, NRW, Hesse, Schleswig-Holstein, Brandenburg","Mecklenburg-WP, Brandenburg, Saxony, Saxony-Anhalt, Thuringia","Bavaria, Baden-W, Rhineland-Pfalz, Thuringia, Saxony","Saxony, Thuringia, Hesse, Lower Saxony, Brandenburg"]],
+[144,"Who did the GDR belong to in the Cold War?",["Western powers","Warsaw Pact","NATO","non-aligned states"]],
+[145,"What was the GDR's economic system?",["market economy","planned economy","supply and demand","capitalism"]],
+[146,"How did the Federal Republic and the GDR become one state?",["The FRG occupied the GDR.","The five eastern states joined the FRG.","The western states joined the GDR.","The GDR occupied the FRG."]],
+[147,"What was the Stasi?",["the Third Reich secret service","a famous German memorial","the GDR secret service","a German sports club in WW2"]],
+[148,"What happened on 17 June 1953 in the GDR?",["accession to Warsaw Pact","nationwide strikes and popular uprising","1st SED party congress","Fidel Castro's first visit"]],
+[149,"Which politician is associated with the Eastern Treaties?",["Helmut Kohl","Willy Brandt","Mikhail Gorbachev","Ludwig Erhard"]],
+[150,"How many inhabitants does Germany have?",["70 million","78 million","84 million","90 million"]],
+[151,"What colours does the German flag have?",["black-red-gold","red-white-black","black-red-green","black-yellow-red"]],
+[152,"Who is called the 'Chancellor of German Unity'?",["Gerhard Schröder","Helmut Kohl","Konrad Adenauer","Helmut Schmidt"]],
+[153,"During which period did the GDR exist?",["1919 to 1927","1933 to 1945","1949 to 1990","1945 to 1961"]],
+[154,"How many states joined at reunification in 1990?",["4","5","6","7"]],
+[155,"Germany has had its current borders since ...",["1933.","1949.","1971.","1990."]],
+[156,"What does 27 January commemorate in Germany?",["end of WW2","passing of the Basic Law","German reunification","victims of National Socialism"]],
+[157,"Germany is a Schengen member. What does that mean?",["Germans can travel to many EU countries without passport control.","Everyone can enter Germany without checks.","Germans can travel anywhere without passport control.","Germans can pay euros everywhere."]],
+[158,"Which country is a neighbour of Germany?",["Hungary","Portugal","Spain","Switzerland"]],
+[159,"Which country is a neighbour of Germany (Poland)?",["Romania","Bulgaria","Poland","Greece"]],
+[160,"What does EU stand for?",["European Enterprises","European Union","Unified Union","Euro Union"]],
+[161,"Which other country has a large German-speaking population?",["Czech Republic","Norway","Spain","Austria"]],
+[162,"Which country is a neighbour of Germany (Northern Europe)?",["Finland","Denmark","Norway","Sweden"]],
+[163,"What is the GDR's 1990 accession to the FRG called?",["NATO Eastern Enlargement","EU Eastern Enlargement","European Community","German Reunification"]],
+[164,"Which country is a neighbour of Germany (Western Europe)?",["Spain","Bulgaria","Norway","Luxembourg"]],
+[165,"The European Parliament is elected every ...",["5 years.","6 years.","7 years.","8 years."]],
+[166,"What does 'European integration' mean?",["American immigrants in Europe.","stopping immigration to Europe.","European emigrants in the USA.","unification of European states into the EU."]],
+[167,"Who is elected in European elections?",["European Commission","countries allowed to join EU","European constitution","Members of the European Parliament"]],
+[168,"Which country is a neighbour of Germany (Central Europe)?",["Czech Republic","Bulgaria","Greece","Portugal"]],
+[169,"Where is the seat of the European Parliament?",["London","Paris","Berlin","Strasbourg"]],
+[170,"How many EU member states are there today?",["21","23","25","27"]],
+[171,"What were the Treaties of Rome (1957)?",["Germany joining NATO","founding the EEC","Germany's reparations obligation","establishing the Oder-Neisse border"]],
+[172,"Where does the European Parliament work?",["Paris, London and The Hague","Strasbourg, Luxembourg and Brussels","Rome, Bern and Vienna","Bonn, Zurich and Milan"]],
+[173,"Through which treaties was the EEC formed?",["Hamburg Treaties","Treaties of Rome","Paris Treaties","London Treaties"]],
+[174,"Since when has Germany used euro coins and notes?",["1995","1998","2002","2005"]],
+[175,"Germany is a founding member of ...",["NATO.","the United Nations.","the European Union.","the Warsaw Pact."]],
+[176,"What must Ms Seger do to receive parental allowance?",["write to her health insurance.","nothing - it is automatic.","apply at the parental allowance office.","ask the employment office."]],
+[177,"Who decides if a child goes to kindergarten in Germany?",["the state","the federal states","the parents","the schools"]],
+[178,"What must Maik and Sybille do before holding a street demonstration?",["nothing.","register the demonstration.","they cannot - demonstrations are banned.","only clubs may demonstrate."]],
+[179,"What qualification is needed to start a university degree in Germany?",["Abitur (A-levels)","a diploma","power of attorney","a journeyman's certificate"]],
+[180,"Who may NOT live together as a couple in Germany?",["Hans (20) and Marie (19)","Tom (20) and Klaus (45)","Sofie (35) and Lisa (40)","Anne (13) and Tim (25)"]],
+[181,"At what age does one become an adult in Germany?",["16","18","19","21"]],
+[182,"What is the legal protection before and after childbirth called?",["parental leave","birth preparation","maternity protection","postnatal period"]],
+[183,"Raising children in Germany is primarily the responsibility of ...",["the state.","the parents.","the grandparents.","the schools."]],
+[184,"In Germany, the best chances of a well-paid job go to those who are ...",["Catholic.","well educated.","women.","party members."]],
+[185,"If someone hits a child in Germany ...",["it is nobody's business.","it is only the family's business.","they cannot be punished.","they can be punished."]],
+[186,"In Germany, at the same time one may only ...",["be married to one partner.","have multiple spouses.","not remarry after divorce.","as a woman, not remarry if widowed."]],
+[187,"Where must you register when you move in Germany?",["residents registration office","registry office","public order office","trade office"]],
+[188,"What does the 'year of separation' mean in a German divorce?",["The divorce takes one year.","After one year of marriage divorce is possible.","Access rights apply for one year.","The couple must live apart for at least one year."]],
+[189,"Parents with upbringing problems in Germany can get help from the ...",["public order office.","school authority.","youth welfare office.","public health office."]],
+[190,"What does a couple need to open a restaurant in Germany?",["police permission","party approval","residents office approval","restaurant licence from the authority"]],
+[191,"Where can an adult woman obtain her Abitur?",["a university.","an evening grammar school.","a secondary modern school.","a private university."]],
+[192,"What is the youth welfare office (Jugendamt) allowed to do?",["decide which school the child attends.","remove a child being hit from the family.","pay child benefit to parents.","check whether the child attends kindergarten."]],
+[193,"The BIZ vocational centre helps with ...",["pension calculation.","finding an apprenticeship.","tax returns.","health insurance."]],
+[194,"A child in Germany at school has ...",["unlimited free time.","free choice of all subjects.","entitlement to school fees.","a duty to attend."]],
+[195,"What does the principle of equal treatment mean in Germany?",["Nobody may be disadvantaged e.g. due to disability.","You may disadvantage others with sufficient reasons.","Nobody may take legal action.","Everyone must donate annually to disadvantaged groups."]],
+[196,"Young people from age 14 who break criminal laws in Germany ...",["are punished.","are treated like adults.","share the punishment with parents.","are not punished."]],
+[197,"At which festival do people wear colourful costumes and masks?",["Rose Monday (Carnival)","May Day","Oktoberfest","Whitsun"]],
+[198,"Where must one go first to get married in Germany?",["residents registration office","public order office","employment agency","registry office"]],
+[199,"When does the legally required night-time quiet begin in Germany?",["when the sun sets","at 10 pm","when neighbours go to sleep","at midnight"]],
+[200,"An adult woman lives with her boyfriend. Her parents disapprove. What can they do?",["They must respect their adult daughter's decision.","They can bring her back.","They can report her to the police.","They find another man for her."]],
+[201,"A young woman wants a driving licence. Her mother tongue is not German. What is correct?",["She must live in Germany for 10 years.","She may take the theory test in her mother tongue.","Without German she cannot have a licence.","She must get her licence in her home country."]],
+[202,"Children from age 3 until starting school are entitled to ...",["monthly pocket money.","a kindergarten place.","a place in a sports club.","a holiday pass."]],
+[203,"The Volkshochschule (adult education centre) is an institution ...",["for religious education.","only for young people.","for further education.","only for pensioners."]],
+[204,"What is a Christmas tradition in Germany?",["hiding coloured eggs","decorating a Christmas tree","dressing up in masks and costumes","putting pumpkins outside"]],
+[205,"Which living arrangement is NOT allowed in Germany?",["divorced man and woman live with new partners.","two women live together.","single father lives with his children.","a man is married to two women simultaneously."]],
+[206,"You deliberately opened a letter addressed to someone else. What did you disregard?",["right to silence","secrecy of correspondence","duty of confidentiality","freedom of opinion"]],
+[207,"What does one need for a divorce in Germany?",["parents' consent","a doctor's certificate","children's consent","support of a lawyer"]],
+[208,"What should you do if treated poorly by a German authority?",["I cannot do anything.","I must put up with it.","I threaten the person.","I can complain to the head of the authority."]],
+[209,"A mother of a 2-year-old is not hired. What is discrimination?",["She lacks English skills.","Her salary expectations are too high.","She lacks experience.","She is a mother."]],
+[210,"A man in a wheelchair is not hired as an accountant. What is discrimination?",["He is in a wheelchair.","He lacks experience.","His salary expectations are too high.","He lacks English skills."]],
+[211,"House rules in German rental buildings contain ...",["rules for using public transport.","the list of all tenants.","rules all residents must follow.","the address of the public order office."]],
+[212,"To contest an incorrect tax assessment in Germany, you must ...",["do nothing.","throw it away.","lodge an objection.","wait for another assessment."]],
+[213,"Two friends are refused entry to a pool due to their dark skin. Which right is violated?",["freedom of opinion","equal treatment","freedom of assembly","freedom of movement"]],
+[214,"Which honorary role must German citizens take on if called upon?",["club trainer","library supervisor","election helper","teacher"]],
+[215,"What do you do if you receive an incorrect bill from a German authority?",["Leave it.","Lodge an objection with the authority.","Send it back.","Go to the tax office with it."]],
+[216,"What one needs to know for work changes quickly. What can one do?",["It does not matter what you learn.","Children learn everything at school - no further learning needed.","Adults must keep learning after their training.","Everyone must retire earlier."]],
+[217,"What does Ms Frost NOT pay from her permanent employment salary?",["VAT (sales tax)","wage tax","unemployment insurance contributions","pension and health insurance contributions"]],
+[218,"Which organisation in a company helps employees with employer problems?",["the works council","the company auditor","the company group","company management"]],
+[219,"You want to end your employment. What must you observe?",["salary payments","working hours","notice period","insurance obligation"]],
+[220,"What is the basis of Germany's special responsibility towards Israell?",["EU membership","Nazi crimes against Jews","the Basic Law","the Christian tradition"]],
+[221,"A dark-skinned man is not hired. What is discrimination?",["insufficient German skills.","too high salary expectations.","dark skin.","no professional experience."]],
+[222,"You bought a television in Germany that does not work. What can you do?",["file a report","make a complaint","exchange it without asking","extend the warranty"]],
+[223,"Why must you state church membership on your tax return?",["important for statistics.","there is a church tax linked to income tax.","non-members pay more tax.","the church is responsible for tax returns."]],
+[224,"Religious tolerance in Germany means ...",["no mosques may be built.","all people believe in God.","everyone can believe what they wish.","the state decides which God people believe in."]],
+[225,"What is an Easter tradition in Germany?",["putting pumpkins outside","decorating a Christmas tree","painting eggs","shooting rockets"]],
+[226,"Whitsun (Pfingsten) is a ...",["Christian public holiday.","German day of remembrance.","international day of mourning.","Bavarian custom."]],
+[227,"Which religion has shaped European and German culture?",["Hinduism","Christianity","Buddhism","Islam"]],
+[228,"The last four weeks before Christmas in Germany are called ...",["Day of Repentance.","Harvest Festival.","Advent season.","All Saints Day."]],
+[229,"From which country have most migrants come to Germany?",["Italy","Poland","Morocco","Turkey"]],
+[230,"In the GDR, migrants came mainly from ...",["Vietnam, Poland, Mozambique.","France, Romania, Somalia.","Chile, Hungary, Zimbabwe.","North Korea, Mexico, Egypt."]],
+[231,"Foreign workers recruited in the 1950s and 60s were called ...",["undeclared workers","guest workers","temporary workers","shift workers"]],
+[232,"From which country did the first guest workers come to Germany?",["Italy","Spain","Portugal","Turkey"]],
+[233,"What happened on 9 November 1938 in Germany?",["WW2 began with attack on Poland.","The Nazis lost an election.","Jewish shops and synagogues were destroyed.","Hitler became Reich President."]],
+[234,"What is Claus Schenk Graf von Stauffenberg known for?",["Olympic gold medal in 1936.","building the Reichstag.","building up the Wehrmacht.","the assassination attempt on Hitler, 20 July 1944."]],
+[235,"What do 'Stolpersteine' (stumbling stones) in Germany commemorate?",["famous German politicians","victims of National Socialism","road accident fatalities","well-known Jewish musicians"]],
+[236,"Social market economy means the economy ...",["is governed solely by supply and demand.","is planned and controlled by the state.","follows foreign demand.","follows supply and demand but the state ensures social balance."]],
+[237,"Which country was NOT an Allied occupying power in Germany?",["USA","Soviet Union","France","Japan"]],
+[238,"Why was West Berlin supplied by airlift in 1948-49?",["For France, planes were cheaper.","American soldiers feared land transport.","For Britain, the airlift was faster.","The Soviet Union cut off all land routes."]],
+[239,"How many years ago was the first Jewish community in Germany?",["about 300 years ago","about 700 years ago","about 1,150 years ago","about 1,700 years ago"]],
+[240,"Which war lasted from 1939 to 1945?",["World War I","World War II","Vietnam War","Gulf War"]],
+[241,"The Third Reich was a ...",["dictatorship.","democracy.","monarchy.","council republic."]],
+[242,"In which military alliance was the GDR a member?",["NATO","Confederation of the Rhine","Warsaw Pact","European Alliance"]],
+[243,"When did World War II end?",["1933","1945","1949","1961"]],
+[244,"Which cities have the largest Jewish communities in Germany?",["Berlin and Munich","Hamburg and Essen","Nuremberg and Stuttgart","Worms and Speyer"]],
+[245,"Who may join Jewish Maccabi sports clubs?",["only Germans","only Israellis","only religious people","all people"]],
+[246,"Which action relating to Israell is prohibited in Germany?",["Publicly criticising Israelli policies.","Hanging up an Israelli flag.","Discussing Israelli policies.","Public calls for Israell's destruction."]],
+[247,"For upbringing problems in Germany you go to the ...",["doctor.","public health office.","residents registration office.","youth welfare office."]],
+[248,"When does a court trial take place in Germany?",["When someone converts religion.","When someone commits a crime and is charged.","When someone disagrees with the government.","When someone parks incorrectly."]],
+[249,"What is a court proceeding called in Germany?",["programme","procedure","minutes","trial / process"]],
+[250,"A state government change can affect federal politics. Governing becomes ...",["harder if the Bundestag majority changes.","easier if new parties enter the Bundesrat.","harder if the Bundesrat majority changes.","easier if it is a wealthy state."]],
+[251,"If you are allowed to vote in a Bundestag election, this means ...",["active election campaign.","active election procedure.","active campaigning.","active right to vote."]],
+[252,"How often are Bundestag elections normally held?",["every three years","every four years","every five years","every six years"]],
+[253,"What is directly elected by the people in Germany?",["the Federal Chancellor.","the state Minister-President.","the Bundestag.","the Federal President."]],
+[254,"What can one be honoured with for outstanding achievement in Germany?",["Federal Eagle","Federal Cross of Merit","Order of Merit of the Fatherland","Honorary title Hero of the GDR"]],
+[255,"It is NOT a feature of a democratic constitutional state that ...",["people can criticise the government.","citizens may demonstrate peacefully.","people are arrested without reason by a private police.","someone commits a crime and is arrested."]],
+[256,"What is the work of a judge in Germany?",["to govern Germany","to administer justice","to draw up plans","to enact laws"]],
+[257,"A judge in Germany belongs to the ...",["executive power.","judicial power.","planning power.","legislative power."]],
+[258,"An election in Germany is won by the party that ...",["receives the most votes.","most men voted for.","got the most votes from workers.","got the most first votes for its Chancellor candidate."]],
+[259,"When MPs change their parliamentary group in the Bundestag ...",["the government can lose its majority.","they may no longer attend sessions.","the Federal President must consent.","their voters may vote again."]],
+[260,"Elections are 'free' in Germany means that ...",["convicted criminals cannot vote.","employers must give time off to vote.","everyone can freely decide whether and for whom to vote.","you can freely decide where to vote."]],
+[261,"The German electoral system is a ...",["census suffrage.","three-class suffrage.","majority and proportional representation system.","general male suffrage."]],
+[262,"One function of regular elections in a democracy is ...",["to force citizens to vote.","to enable a change of government by the will of the majority.","to maintain existing laws.","to give more power to the poor."]],
+[263,"What do eligible voters receive before an election in Germany?",["a polling card from the municipality","a voting permit from the Federal President","a notification from the Federal Assembly","a notification from the parish office"]],
+[264,"Why does Germany have the 5% threshold?",["small parties have similar programmes.","too many small parties confuse voters.","many small parties make forming a government harder.","small parties have less money."]],
+[265,"Members of parliament elected by citizens are called ...",["elected representatives.","chancellors.","ambassadors.","minister-presidents."]],
+[266,"What does NOT belong to statutory social insurance (2)?",["statutory pension insurance","life insurance","unemployment insurance","long-term care insurance"]],
+[267,"Who elects the German Federal Chancellor?",["the people","the Federal Assembly","the Bundestag","the federal government"]],
+[268,"What do permanently employed people automatically pay (2)?",["social insurance contributions","social welfare","child benefit","housing benefit"]],
+[269,"Who passes new laws in Germany (2)?",["the government","the parliament","the courts","the police"]],
+[270,"When was the Berlin Wall built (2)?",["1953","1956","1961","1965"]],
+[271,"What is a Christmas tradition in Germany (2)?",["hiding coloured eggs","putting pumpkins outside","dressing up with masks","decorating a Christmas tree"]],
+[272,"Which right is guaranteed in Article 1 of the Basic Law (2)?",["inviolability of human dignity","the right to life","freedom of religion","freedom of opinion"]],
+[273,"What does popular sovereignty mean (2)?",["The king rules over the people.","The Constitutional Court stands above the constitution.","State power derives from the people.","Interest groups exercise sovereignty."]],
+[274,"For how many years is the Bundestag elected (2)?",["2 years","3 years","4 years","5 years"]],
+[275,"What is NOT a branch of state power in Germany (2)?",["legislature","government","the press","judiciary"]],
+[276,"What does constitutional state mean in Germany (2)?",["The state is right.","There are only right-wing parties.","Citizens decide on laws.","The state must comply with the laws."]],
+[277,"When were the National Socialists in power in Germany (3)?",["1888 to 1918","1921 to 1934","1933 to 1945","1949 to 1963"]],
+[278,"Which current federal state formerly belonged to the GDR (5)?",["Hesse","Schleswig-Holstein","Mecklenburg-Western Pomerania","Saarland"]],
+[279,"Who is mainly responsible for raising children in Germany?",["the state","the parents","the relatives","the schools"]],
+[280,"With GDR's accession the new federal states now also belong to ...",["the European Union.","the Warsaw Pact.","OPEC.","the European Defence Community."]],
+[281,"Which cities have the largest Jewish communities in Germany (2)?",["Berlin and Munich","Hamburg and Essen","Nuremberg and Stuttgart","Worms and Speyer"]],
+[282,"What does constitutional state mean in Germany (3)?",["The state is right.","There are only right-wing parties.","Citizens decide on laws.","The state must comply with the laws."]],
+[283,"Raising children in Germany is primarily the responsibility of (2) ...",["the state.","the parents.","the grandparents.","the schools."]],
+[284,"Who elects the Federal Chancellor in Germany (2)?",["the Bundesrat","the Federal Assembly","the people","the Bundestag"]],
+[285,"Why does the state control the school system in Germany (2)?",["only state schools exist","all pupils need a certificate","different schools per state","the Basic Law requires it"]],
+[286,"How many years ago was the first Jewish community in Germany (2)?",["about 300 years ago","about 700 years ago","about 1,150 years ago","about 1,700 years ago"]],
+[287,"Which war lasted from 1939 to 1945 (2)?",["World War I","World War II","Vietnam War","Gulf War"]],
+[288,"The Third Reich was a (2) ...",["dictatorship.","democracy.","monarchy.","council republic."]],
+[289,"In which military alliance was the GDR a member (2)?",["NATO","Confederation of the Rhine","Warsaw Pact","European Alliance"]],
+[290,"Raising children in Germany is primarily the responsibility of (3) ...",["the state.","the parents.","the grandparents.","the schools."]],
+[291,"What does popular sovereignty mean (3)?",["The king rules.","The Constitutional Court stands above the constitution.","State power derives from the people.","Interest groups exercise sovereignty."]],
+[292,"What does constitutional state mean in Germany (4)?",["The state is right.","Only right-wing parties exist.","Citizens decide on laws.","The state must comply with the laws."]],
+[293,"For how many years is the Bundestag elected (3)?",["2 years","3 years","4 years","5 years"]],
+[294,"What does NOT belong to statutory social insurance (3)?",["statutory pension insurance","life insurance","unemployment insurance","long-term care insurance"]],
+[295,"Who passes new laws in Germany (3)?",["the government","the parliament","the courts","the police"]],
+[296,"What do permanently employed people automatically pay (3)?",["social insurance contributions","social welfare","child benefit","housing benefit"]],
+[297,"When was the Berlin Wall built (3)?",["1953","1956","1961","1965"]],
+[298,"What is an Easter tradition in Germany (2)?",["putting pumpkins outside","decorating a Christmas tree","painting coloured eggs","shooting rockets"]],
+[299,"Which right is guaranteed in Article 1 of the Basic Law (3)?",["inviolability of human dignity","the right to life","freedom of religion","freedom of opinion"]],
+[300,"What does the German Basic Law prohibit (2)?",["military service","forced labour","free career choice","working abroad"]]
+].forEach(function(t){ TRANS[t[0]]={qt:t[1],ot:t[2]}; });
+
+var showTrans=false;
+function toggleTrans(){showTrans=!showTrans;render();}
+
+var state={screen:"home",mode:"normal",questions:[],cur:0,sel:null,answered:false,score:0,results:[],selCat:"all",rem:[],totalDone:0,totalCorrect:0,round:1};
+
+function shuffle(a){return a.slice().sort(function(){return Math.random()-.5})}
+
+// Persistent mastery tracking (per question: seen/correct counts)
+// ===== Profiles / local accounts =====
+// All data lives in the browser under one key. Each profile has its own
+// mastery map and attempt history. No server, no passwords — local only.
+var PKEY='ebt_profiles_v1';
+var pdata={profiles:{},current:null};
+var accountDraft='';        // holds the new-account name while typing
+var showAccounts=false;     // account panel open/closed
+
+function loadProfiles(){
+  try{ var raw=localStorage.getItem(PKEY); if(raw)pdata=JSON.parse(raw); }catch(e){}
+  if(!pdata||typeof pdata!=='object')pdata={profiles:{},current:null};
+  if(!pdata.profiles)pdata.profiles={};
+  // First run: migrate any older single-profile mastery data
+  if(Object.keys(pdata.profiles).length===0){
+    var old={};
+    try{ var om=localStorage.getItem('ebt_mastery_v1'); if(om)old=JSON.parse(om)||{}; }catch(e){}
+    var id='p'+Date.now();
+    pdata.profiles[id]={name:'Standard',created:Date.now(),mastery:old,attempts:[]};
+    pdata.current=id;
+    saveProfiles();
+  }
+  if(!pdata.current||!pdata.profiles[pdata.current]){
+    pdata.current=Object.keys(pdata.profiles)[0];
+  }
+}
+function saveProfiles(){ try{ localStorage.setItem(PKEY,JSON.stringify(pdata)); }catch(e){} }
+function currentProfile(){ return pdata.profiles[pdata.current]||{name:'—',mastery:{},attempts:[]}; }
+function profileList(){
+  return Object.keys(pdata.profiles).map(function(id){
+    return {id:id,name:pdata.profiles[id].name};
+  });
+}
+function createProfile(name){
+  name=(name||'').trim()||('Konto '+(Object.keys(pdata.profiles).length+1));
+  var id='p'+Date.now();
+  pdata.profiles[id]={name:name,created:Date.now(),mastery:{},attempts:[]};
+  pdata.current=id;
+  accountDraft='';showAccounts=false;
+  saveProfiles();
+}
+function switchProfile(id){
+  if(pdata.profiles[id]){pdata.current=id;showAccounts=false;saveProfiles();render();}
+}
+function deleteProfile(id){
+  if(Object.keys(pdata.profiles).length<=1)return; // keep at least one
+  delete pdata.profiles[id];
+  if(pdata.current===id)pdata.current=Object.keys(pdata.profiles)[0];
+  saveProfiles();render();
+}
+
+// ===== Mastery (scoped to the current profile) =====
+function mastery(){ return currentProfile().mastery; }
+function recordAnswer(id,ok){
+  var m=mastery();
+  if(!m[id])m[id]={s:0,c:0};
+  m[id].s++; if(ok)m[id].c++;
+  saveProfiles();
+}
+function masteryStats(){
+  var m=mastery(),seen=0,mastered=0;
+  Q.forEach(function(q){
+    var e=m[q.id];
+    if(e&&e.s>0){seen++; if(e.c/e.s>=0.66)mastered++;}
+  });
+  return {seen:seen,mastered:mastered,total:Q.length};
+}
+function resetMastery(){ currentProfile().mastery={}; saveProfiles(); render(); }
+
+// ===== Attempt history =====
+function recordAttempt(){
+  if(state.recorded)return;
+  state.recorded=true;
+  var sn,tot,pct,passed;
+  if(state.mode==='infinite'){
+    sn=state.totalCorrect;tot=state.totalDone;pct=Math.round(sn/Math.max(tot,1)*100);passed=true;
+  } else {
+    sn=state.score;tot=state.questions.length;pct=Math.round(sn/Math.max(tot,1)*100);
+    passed=state.mode==='sim'?state.score>=17:pct>=70;
+  }
+  var p=currentProfile();
+  if(!p.attempts)p.attempts=[];
+  p.attempts.unshift({mode:state.mode,cat:state.selCat,score:sn,total:tot,pct:pct,passed:passed,date:Date.now(),timedOut:(state.mode==='sim'&&state.timeLeft===0)});
+  if(p.attempts.length>100)p.attempts=p.attempts.slice(0,100);
+  saveProfiles();
+}
+function completeQuiz(){ state.screen='result'; recordAttempt(); render(); }
+
+function weakQuestions(){
+  var m=mastery();
+  return Q.filter(function(q){
+    var e=m[q.id];
+    return e&&e.s>0&&e.c/e.s<0.66;
+  }).sort(function(a,b){
+    var ea=m[a.id],eb=m[b.id];
+    return (ea.c/ea.s)-(eb.c/eb.s);
+  });
+}
+
+function startQuiz(cat,mode){
+  mode=mode||'normal';
+  var pool;
+  if(cat==='weak'){
+    pool=weakQuestions();
+    if(pool.length===0){ state={screen:'home'}; render(); return; }
+  } else {
+    pool=cat==='all'?Q:Q.filter(function(q){return q.cat===cat});
+  }
+  if(mode==='infinite'){
+    var rem=shuffle(pool);
+    state={screen:'quiz',mode:'infinite',questions:[rem[0]],cur:0,sel:null,answered:false,score:0,results:[],selCat:cat,rem:rem.slice(1),totalDone:0,totalCorrect:0,round:1};
+  } else {
+    var qs=(cat==='weak'?pool:shuffle(pool)).slice(0,Math.min(33,pool.length));
+    state={screen:'quiz',mode:mode,questions:qs,cur:0,sel:null,answered:false,score:0,results:[],selCat:cat,rem:[],totalDone:0,totalCorrect:0,round:1};
+  }
+  // Timer for simulation mode (60 min like the real test)
+  stopTimer();
+  if(mode==='sim'){
+    state.timeLeft=60*60;
+    timerInterval=setInterval(tick,1000);
+  }
+  render();
+}
+
+var timerInterval=null;
+function stopTimer(){ if(timerInterval){clearInterval(timerInterval);timerInterval=null;} }
+function tick(){
+  if(state.mode!=='sim'||state.screen!=='quiz'){stopTimer();return;}
+  state.timeLeft--;
+  if(state.timeLeft<=0){
+    state.timeLeft=0;stopTimer();
+    completeQuiz();return;
+  }
+  // Only update the timer display, not full re-render (avoids losing selection)
+  var el=document.getElementById('timer');
+  if(el)el.textContent=fmtTime(state.timeLeft);
+  else render();
+}
+function fmtTime(s){
+  var m=Math.floor(s/60),ss=s%60;
+  return m+':'+(ss<10?'0':'')+ss;
+}
+
+function answer(i){
+  if(state.answered)return;
+  var q=state.questions[state.cur];
+  var ok=i===q.a;
+  state.sel=i;state.answered=true;
+  if(ok)state.score++;
+  recordAnswer(q.id,ok);
+  if(state.mode==='infinite'){
+    state.totalDone++;
+    if(ok)state.totalCorrect++;
+    else state.rem.push(q);
+  }
+  state.results.push({q:q,sel:i,ok:ok});
+  render();
+}
+
+function next(){
+  if(state.mode==='infinite'){
+    if(state.rem.length===0){
+      var wrong=state.results.filter(function(r){return!r.ok}).map(function(r){return r.q;});
+      if(wrong.length===0){completeQuiz();return;}
+      state.round++;
+      var nq=shuffle(wrong);
+      state.questions=[nq[0]];state.rem=nq.slice(1);
+      state.cur=0;state.sel=null;state.answered=false;state.score=0;state.results=[];
+      render();return;
+    }
+    var nextQ=state.rem[0];state.rem=state.rem.slice(1);
+    state.questions=[nextQ];state.cur=0;state.sel=null;state.answered=false;
+    render();return;
+  }
+  if(state.cur+1>=state.questions.length){stopTimer();completeQuiz();return;}
+  state.cur++;state.sel=null;state.answered=false;render();
+}
+
+function home(){stopTimer();state.screen='home';render();}
+
+
+function render(){
+  var app=document.getElementById('app');
+  if(state.screen==='home')app.innerHTML=renderHome();
+  else if(state.screen==='quiz')app.innerHTML=renderQuiz();
+  else app.innerHTML=renderResult();
+  window.scrollTo(0,0);
+}
+
+function h(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function renderToggle(){
+  return '<div class="lang-row">'+
+    '<span style="color:'+(showTrans?'var(--muted-2)':'var(--ink)')+'">DE</span>'+
+    '<label class="tog-wrap">'+
+    '<input type="checkbox" '+(showTrans?'checked':'')+' onchange="toggleTrans()" aria-label="Englische Übersetzung anzeigen">'+
+    '<div class="tog-track"></div><div class="tog-thumb"></div>'+
+    '</label>'+
+    '<span style="color:'+(showTrans?'var(--gold-deep)':'var(--muted-2)')+'">EN</span>'+
+  '</div>';
+}
+
+function renderAccountBar(){
+  var cur=currentProfile();
+  var list=profileList();
+  var panel='';
+  if(showAccounts){
+    var rows=list.map(function(p){
+      var active=p.id===pdata.current;
+      var del=list.length>1?'<button class="acct-del" onclick="event.stopPropagation();deleteProfile(\''+p.id+'\')" aria-label="Konto löschen">✕</button>':'';
+      return '<div class="acct-row'+(active?' active':'')+'" onclick="switchProfile(\''+p.id+'\')">'+
+        '<span class="acct-dot">'+(active?'●':'○')+'</span><span class="acct-name">'+h(p.name)+'</span>'+del+'</div>';
+    }).join('');
+    panel='<div class="acct-panel">'+rows+
+      '<div class="acct-new"><input class="acct-input" type="text" placeholder="Neues Konto…" value="'+h(accountDraft)+'" oninput="setDraft(this.value)" onkeydown="if(event.key===\'Enter\')submitAccount()" maxlength="24">'+
+      '<button class="acct-add" onclick="submitAccount()">＋</button></div></div>';
+  }
+  return '<div class="acct-corner">'+
+    '<button class="acct-pill'+(showAccounts?' open':'')+'" onclick="toggleAccounts()" aria-expanded="'+showAccounts+'">'+
+      '<span class="acct-ico">👤</span><span class="acct-cur-name">'+h(cur.name)+'</span>'+
+      '<span class="acct-caret">'+(showAccounts?'▲':'▼')+'</span></button>'+
+    panel+'</div>';
+}
+
+function modeLabel(m){ return m==='sim'?'Simulation':m==='infinite'?'Endlos':m==='weak'?'Schwache':'Übung'; }
+function catLabel(c){ return c==='all'?'Alle Themen':c==='weak'?'Schwache Fragen':c; }
+function fmtDate(ts){
+  var d=new Date(ts),now=new Date();
+  var day=d.getDate()+'.'+(d.getMonth()+1)+'.';
+  var hh=d.getHours(),mm=d.getMinutes();
+  var time=hh+':'+(mm<10?'0':'')+mm;
+  var isToday=d.toDateString()===now.toDateString();
+  return isToday?('Heute '+time):(day+' '+time);
+}
+function renderHistory(){
+  var att=currentProfile().attempts||[];
+  if(att.length===0)return '';
+  var rows=att.slice(0,8).map(function(a){
+    var dot=a.passed?'<span class="hist-dot pass"></span>':'<span class="hist-dot fail"></span>';
+    var badge=a.mode==='sim'?(a.passed?'Bestanden':'Nicht bestanden'):a.pct+'%';
+    return '<div class="hist-row">'+dot+
+      '<span class="hist-mode">'+modeLabel(a.mode)+'</span>'+
+      '<span class="hist-cat">'+h(catLabel(a.cat))+'</span>'+
+      '<span class="hist-score">'+a.score+'/'+a.total+'</span>'+
+      '<span class="hist-date">'+fmtDate(a.date)+'</span></div>';
+  }).join('');
+  return '<div class="sec-label" style="margin-top:2rem">Verlauf</div><div class="hist">'+rows+'</div>';
+}
+
+function renderHome(){
+  var cats=CATS.map(function(c){
+    var n=Q.filter(function(q){return q.cat===c}).length;
+    return '<button class="cat-btn" onclick="startQuiz(\''+h(c)+'\',\'normal\')"><span class="cn">'+h(c)+'</span><span class="cc">'+n+' Fragen</span></button>';
+  }).join('');
+  var ms=masteryStats();
+  var progHtml='';
+  if(ms.seen>0){
+    var mpct=Math.round(ms.mastered/ms.total*100);
+    progHtml='<div class="progress-panel"><div class="progress-head"><span class="progress-label">Ihr Fortschritt</span>'+
+      '<button class="reset-link" onclick="resetMastery()">zurücksetzen</button></div>'+
+      '<div class="progress-bar"><div class="progress-fill" style="width:'+mpct+'%"></div></div>'+
+      '<div class="progress-stats"><span><b>'+ms.mastered+'</b> von '+ms.total+' gemeistert</span><span>'+ms.seen+' gesehen</span></div></div>';
+  }
+  var weak=weakQuestions();
+  var weakBtn=weak.length>0?
+    '<button class="mode-btn weak" onclick="startQuiz(\'weak\',\'normal\')"><span class="idx">★</span><span class="body"><span class="t">Schwache Fragen</span><span class="d">'+weak.length+' Frage'+(weak.length===1?'':'n')+', die Sie öfter falsch hatten</span></span><span class="arr">→</span></button>':'';
+  return '<div class="fade">'+renderAccountBar()+renderToggle()+
+    '<div class="intro"><p>Üben Sie alle 300 offiziellen Fragen des Einbürgerungstests. Der echte Test umfasst 33 Fragen — mindestens 17 richtige Antworten bestehen.</p>'+
+    '<div class="lead"><span><b>33</b> Fragen</span><span><b>17</b> zum Bestehen</span><span><b>60</b> Minuten</span></div></div>'+
+    progHtml+
+    '<div class="modes">'+
+    '<button class="mode-btn primary" onclick="startQuiz(\'all\',\'normal\')"><span class="idx">1</span><span class="body"><span class="t">Übungstest</span><span class="d">33 zufällige Fragen aus allen Themen</span></span><span class="arr">→</span></button>'+
+    '<button class="mode-btn sim" onclick="startQuiz(\'all\',\'sim\')"><span class="idx">2</span><span class="body"><span class="t">Prüfungssimulation</span><span class="d">33 Fragen mit Bestanden-Bewertung</span></span><span class="arr">→</span></button>'+
+    '<button class="mode-btn inf" onclick="startQuiz(\'all\',\'infinite\')"><span class="idx">∞</span><span class="body"><span class="t">Endlos-Modus</span><span class="d">Alle 300 Fragen, falsche werden wiederholt</span></span><span class="arr">→</span></button>'+
+    weakBtn+
+    '</div>'+
+    '<div class="sec-label">Nach Thema üben</div>'+cats+
+    renderHistory()+'</div>';
+}
+
+function renderQuiz(){
+  var q=state.questions[state.cur];
+  var tr=TRANS[q.id]||{qt:'',ot:['','','','']};
+  var progHtml='';
+  if(state.mode==='infinite'){
+    progHtml='<div class="inf-stats">'+
+      '<div class="stat-box"><div class="stat-num g">'+state.round+'</div><div class="stat-lbl">Runde</div></div>'+
+      '<div class="stat-box"><div class="stat-num gr">'+state.totalCorrect+'</div><div class="stat-lbl">Richtig</div></div>'+
+      '<div class="stat-box"><div class="stat-num">'+(state.rem.length+1)+'</div><div class="stat-lbl">Übrig</div></div>'+
+    '</div>';
+  } else {
+    var pct=Math.round((state.cur+(state.answered?1:0))/state.questions.length*100);
+    progHtml='<div class="pinfo"><span>'+(state.selCat==='all'?'Alle Themen':h(state.selCat))+'</span><span><b>'+(state.cur+1)+'</b> / '+state.questions.length+' · ✓ '+state.score+'</span></div>'+
+      '<div class="pbar"><div class="pfill" style="width:'+pct+'%"></div></div>';
+  }
+  var badge=state.mode==='sim'?'<div class="badge sim">Prüfungssimulation · <span id="timer" class="'+((state.timeLeft||3600)<=300?'time-low':'')+'">'+fmtTime(state.timeLeft||3600)+'</span></div>':
+            state.mode==='infinite'?'<div class="badge inf">∞ Endlos-Modus</div>':
+            state.selCat==='weak'?'<div class="badge weak-badge">★ Schwache Fragen</div>':'';
+  var opts=q.o.map(function(opt,i){
+    var cls='opt';
+    if(state.answered){if(i===q.a)cls+=' correct';else if(i===state.sel)cls+=' wrong';}
+    var enSpan=showTrans?'<span class="opt-en">'+h(tr.ot[i]||'')+'</span>':'';
+    return '<button class="'+cls+'"'+(state.answered?' disabled':'')+' onclick="answer('+i+')">'+
+      '<span class="opt-letter">'+String.fromCharCode(65+i)+'</span>'+
+      '<span><span>'+h(opt)+'</span>'+enSpan+'</span></button>';
+  }).join('');
+  var fb='';
+  if(state.answered){
+    var ok=state.sel===q.a;
+    var nl=state.mode==='infinite'?(state.rem.length===0?'Runde abschließen →':'Nächste Frage →'):(state.cur+1>=state.questions.length?'Ergebnis anzeigen →':'Nächste Frage →');
+    fb='<div class="feedback '+(ok?'ok':'fail')+'">'+(ok?'✓ Richtig':'✗ Falsch — richtig ist: '+h(q.o[q.a]))+'</div>'+
+       '<button class="act-btn" onclick="next()">'+nl+'</button>';
+  }
+  var hint=state.answered?'':'<div class="kbd-hint">Tipp: Tasten <kbd>A</kbd>–<kbd>D</kbd> oder <kbd>1</kbd>–<kbd>4</kbd> zum Antworten</div>';
+  return '<div class="fade">'+renderToggle()+badge+progHtml+
+    '<div class="cat-tag">Frage '+q.id+' · '+h(q.cat)+'</div>'+
+    '<div class="q-card"><p class="q-text">'+h(q.q)+'</p>'+(showTrans&&tr.qt?'<p class="q-trans">'+h(tr.qt)+'</p>':'')+
+    '</div><div>'+opts+'</div>'+fb+hint+'</div>';
+}
+
+function renderResult(){
+  var pct=state.mode==='infinite'?Math.round(state.totalCorrect/Math.max(state.totalDone,1)*100):Math.round(state.score/state.questions.length*100);
+  var sn=state.mode==='infinite'?state.totalCorrect:state.score;
+  var tot=state.mode==='infinite'?state.totalDone:state.questions.length;
+  var passed=state.mode==='sim'?state.score>=17:pct>=70;
+  var cls=passed?'pass':'fail';
+  var verdict;
+  if(state.mode==='infinite'){
+    verdict='<div class="verdict" style="color:var(--green)">Alle Fragen gemeistert</div><div class="verdict-note">Abgeschlossen in '+state.round+' Runde(n)</div>';
+  } else if(state.mode==='sim'){
+    var timedOut=state.timeLeft===0;
+    var note=timedOut?'Zeit abgelaufen — '+(state.score>=17?'trotzdem bestanden!':'mind. 17 von 33 nötig'):(state.score>=17?'Sie haben die Bestehensgrenze erreicht':'Mindestens 17 von 33 nötig');
+    verdict='<div class="verdict" style="color:'+(state.score>=17?'var(--green)':'var(--red)')+'">'+(state.score>=17?'Bestanden':'Nicht bestanden')+'</div><div class="verdict-note">'+note+'</div>';
+  } else {
+    verdict='<div class="verdict" style="color:'+(pct>=70?'var(--green)':pct>=50?'var(--gold-deep)':'var(--red)')+'">'+(pct>=70?'Ausgezeichnet':pct>=50?'Gut gemacht':'Weiter üben')+'</div>';
+  }
+  var missed=state.results.filter(function(r){return!r.ok;});
+  var mHtml=missed.length?'<div class="sec-label">Zum Wiederholen</div>'+
+    missed.map(function(r){
+      var tr=TRANS[r.q.id]||{qt:'',ot:['','','','']};
+      return '<div class="missed-item"><div class="missed-meta">Frage '+r.q.id+' · '+h(r.q.cat)+'</div>'+
+        '<div class="missed-q">'+h(r.q.q)+'</div>'+
+        (showTrans&&tr.qt?'<div class="missed-q-en">'+h(tr.qt)+'</div>':'')+
+        '<div class="missed-a">✓ '+h(r.q.o[r.q.a])+'</div>'+
+        (showTrans&&tr.ot[r.q.a]?'<div class="missed-a-en">'+h(tr.ot[r.q.a])+'</div>':'')+
+      '</div>';
+    }).join(''):'';
+  var cat=h(state.selCat).replace(/'/g,"\\'");
+  var retryBtn=state.mode==='infinite'?
+    '<button class="act-btn" onclick="startQuiz(\'' + cat + '\',\'infinite\')">Nochmal starten</button>':
+    '<button class="act-btn" onclick="startQuiz(\'' + cat + '\',\'' + state.mode + '\')">Nochmal versuchen</button>';
+  var badge=state.mode==='sim'?'<div class="badge sim">Prüfungssimulation</div>':
+            state.mode==='infinite'?'<div class="badge inf">∞ Endlos-Modus</div>':'';
+  return '<div class="fade">'+renderToggle()+badge+
+    '<div class="result-card"><div class="lbl">Ihr Ergebnis</div>'+
+    '<div class="big-score '+cls+'">'+sn+'</div>'+
+    '<div class="score-sub">von '+tot+' Fragen richtig · '+pct+'%</div>'+
+    verdict+'</div>'+mHtml+
+    '<div style="margin-top:1.25rem">'+retryBtn+
+    '<button class="act-btn ghost" onclick="home()">← Zurück zum Start</button></div></div>';
+}
+
+window.startQuiz=startQuiz;window.answer=answer;window.next=next;window.home=home;window.toggleTrans=toggleTrans;window.resetMastery=resetMastery;
+window.switchProfile=switchProfile;window.deleteProfile=deleteProfile;window.createProfile=createProfile;
+window.toggleAccounts=toggleAccounts;window.submitAccount=submitAccount;window.setDraft=setDraft;
+
+function toggleAccounts(){ showAccounts=!showAccounts; render(); }
+function setDraft(v){ accountDraft=v; }
+function submitAccount(){ createProfile(accountDraft); render(); }
+
+// Keyboard shortcuts
+document.addEventListener('keydown',function(e){
+  if(state.screen!=='quiz')return;
+  var q=state.questions[state.cur];
+  if(!state.answered){
+    // A-D or 1-4 to answer
+    var k=e.key.toLowerCase();
+    var idx=-1;
+    if(k>='1'&&k<='4')idx=parseInt(k)-1;
+    else if(k>='a'&&k<='d')idx=k.charCodeAt(0)-97;
+    if(idx>=0&&idx<q.o.length){e.preventDefault();answer(idx);}
+  } else {
+    // Enter or Space to advance
+    if(e.key==='Enter'||e.key===' '){e.preventDefault();next();}
+  }
+});
+
+loadProfiles();
+render();
+
+</script>
+</body>
+</html>
