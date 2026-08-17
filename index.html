@@ -156,6 +156,24 @@ h1{font-size:clamp(1.7rem,5vw,2.3rem);font-weight:600;color:var(--ink);letter-sp
 .acct-input:focus{outline:none;border-color:var(--ink)}
 .acct-add{border:none;background:var(--ink);color:var(--paper);border-radius:3px;width:32px;font-size:1rem;font-weight:600;cursor:pointer;flex-shrink:0}
 .acct-add:hover{background:var(--red)}
+.acct-cloud{font-size:.7rem;color:var(--gold-deep);margin-left:-.2rem}
+.acct-section-label{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.58rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted-2);padding:.6rem .8rem .3rem}
+.auth-block{padding:.4rem .8rem .8rem}
+.auth-block.signed{padding:.6rem .8rem .8rem}
+.auth-email{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.82rem;font-weight:600;color:var(--ink);word-break:break-all}
+.auth-sub{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.68rem;color:var(--gold-deep);margin-top:.2rem}
+.auth-signout{margin-top:.6rem;width:100%;border:1px solid var(--line-strong);background:transparent;color:var(--ink);border-radius:3px;padding:.45rem;font-family:"Helvetica Neue",Arial,sans-serif;font-size:.78rem;font-weight:600;cursor:pointer}
+.auth-signout:hover{border-color:var(--red);color:var(--red)}
+.auth-tabs{display:flex;gap:.3rem;margin-bottom:.5rem}
+.auth-tabs button{flex:1;border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:3px;padding:.35rem;font-family:"Helvetica Neue",Arial,sans-serif;font-size:.72rem;font-weight:600;cursor:pointer}
+.auth-tabs button.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.auth-input{width:100%;border:1px solid var(--line-strong);border-radius:3px;padding:.5rem .6rem;font-family:"Helvetica Neue",Arial,sans-serif;font-size:.82rem;background:var(--paper);color:var(--ink);margin-bottom:.4rem}
+.auth-input:focus{outline:none;border-color:var(--ink)}
+.auth-go{width:100%;border:none;background:var(--ink);color:var(--paper);border-radius:3px;padding:.5rem;font-family:"Helvetica Neue",Arial,sans-serif;font-size:.8rem;font-weight:600;cursor:pointer}
+.auth-go:hover{background:var(--red)}
+.auth-go:disabled{opacity:.6;cursor:default}
+.auth-err{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.72rem;color:var(--red);margin-bottom:.4rem;line-height:1.3}
+.auth-hint{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.66rem;color:var(--muted-2);margin-top:.5rem;line-height:1.4}
 /* History */
 .hist{border:1px solid var(--line);border-radius:3px;overflow:hidden;background:#fff}
 .hist-row{display:flex;align-items:center;gap:.7rem;padding:.6rem .85rem;font-family:"Helvetica Neue",Arial,sans-serif;font-size:.8rem;border-bottom:1px solid var(--line);color:var(--charcoal)}
@@ -182,6 +200,7 @@ h1{font-size:clamp(1.7rem,5vw,2.3rem);font-weight:600;color:var(--ink);letter-sp
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 :focus-visible{outline:2px solid var(--red);outline-offset:2px}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 <div class="bg-seal"></div>
@@ -838,7 +857,100 @@ function loadProfiles(){
     pdata.current=Object.keys(pdata.profiles)[0];
   }
 }
-function saveProfiles(){ try{ localStorage.setItem(PKEY,JSON.stringify(pdata)); }catch(e){} }
+function saveProfiles(){ try{ localStorage.setItem(PKEY,JSON.stringify(pdata)); }catch(e){} scheduleSync(); }
+
+// ===== Supabase sync (optional; guests work fully offline) =====
+var SB_URL='https://gaqymzloekmqhjyvyiee.supabase.co';
+var SB_KEY='sb_publishable_owVI2_PI6Y4LouYSvZ1teQ_bWTOABAW';
+var sb=null, sbUser=null, authError='', authBusy=false, showAuth=false, authMode='login', syncState='';
+var authEmail='', authPass='';
+try{ if(window.supabase)sb=window.supabase.createClient(SB_URL,SB_KEY); }catch(e){}
+
+function setAuthEmail(v){authEmail=v;}
+function setAuthPass(v){authPass=v;}
+function toggleAuth(){ showAuth=!showAuth; authError=''; render(); }
+function setAuthMode(m){ authMode=m; authError=''; render(); }
+
+// Push local data up to the user's row (debounced)
+var syncTimer=null;
+function scheduleSync(){
+  if(!sb||!sbUser)return;
+  syncState='saving';
+  if(syncTimer)clearTimeout(syncTimer);
+  syncTimer=setTimeout(pushData,800);
+}
+function pushData(){
+  if(!sb||!sbUser)return;
+  sb.from('progress').upsert({user_id:sbUser.id,data:pdata,updated_at:new Date().toISOString()})
+    .then(function(res){
+      syncState=res.error?'error':'saved';
+      var el=document.getElementById('sync-badge'); if(el)el.textContent=syncLabel();
+      setTimeout(function(){ if(syncState==='saved'){syncState='';var e2=document.getElementById('sync-badge');if(e2)e2.textContent=syncLabel();} },1500);
+    });
+}
+function syncLabel(){
+  if(!sbUser)return '';
+  if(syncState==='saving')return 'Synchronisiere…';
+  if(syncState==='saved')return 'Gespeichert ✓';
+  if(syncState==='error')return 'Sync-Fehler';
+  return 'Synchronisiert';
+}
+
+// Pull the user's saved data down (on login). Merges guest progress up if server is empty.
+function pullData(cb){
+  if(!sb||!sbUser){cb&&cb();return;}
+  sb.from('progress').select('data').eq('user_id',sbUser.id).maybeSingle()
+    .then(function(res){
+      var server=res.data&&res.data.data;
+      if(server&&server.profiles&&Object.keys(server.profiles).length){
+        // Server has data → adopt it as the source of truth
+        pdata=server;
+        if(!pdata.current||!pdata.profiles[pdata.current])pdata.current=Object.keys(pdata.profiles)[0];
+        try{ localStorage.setItem(PKEY,JSON.stringify(pdata)); }catch(e){}
+      } else {
+        // Server empty → push whatever the guest already had
+        pushData();
+      }
+      cb&&cb();
+    });
+}
+
+function signUp(){
+  if(!sb){authError='Supabase nicht geladen';render();return;}
+  authBusy=true;authError='';render();
+  sb.auth.signUp({email:authEmail,password:authPass}).then(function(res){
+    authBusy=false;
+    if(res.error){authError=res.error.message;render();return;}
+    if(res.data.user&&!res.data.session){authError='Bitte E-Mail bestätigen, dann einloggen.';render();return;}
+    onAuthed(res.data.user);
+  });
+}
+function signIn(){
+  if(!sb){authError='Supabase nicht geladen';render();return;}
+  authBusy=true;authError='';render();
+  sb.auth.signInWithPassword({email:authEmail,password:authPass}).then(function(res){
+    authBusy=false;
+    if(res.error){authError=res.error.message;render();return;}
+    onAuthed(res.data.user);
+  });
+}
+function signOut(){
+  if(!sb)return;
+  sb.auth.signOut().then(function(){ sbUser=null;syncState='';showAccounts=false;render(); });
+}
+function onAuthed(user){
+  sbUser=user; showAuth=false; authEmail=''; authPass=''; authError='';
+  pullData(function(){ render(); });
+  render();
+}
+// Restore session on load
+function initAuth(cb){
+  if(!sb){cb&&cb();return;}
+  sb.auth.getSession().then(function(res){
+    if(res.data&&res.data.session){ sbUser=res.data.session.user; pullData(function(){cb&&cb();}); }
+    else { cb&&cb(); }
+  });
+}
 function currentProfile(){ return pdata.profiles[pdata.current]||{name:'—',mastery:{},attempts:[]}; }
 function profileList(){
   return Object.keys(pdata.profiles).map(function(id){
@@ -1025,13 +1137,41 @@ function renderAccountBar(){
       return '<div class="acct-row'+(active?' active':'')+'" onclick="switchProfile(\''+p.id+'\')">'+
         '<span class="acct-dot">'+(active?'●':'○')+'</span><span class="acct-name">'+h(p.name)+'</span>'+del+'</div>';
     }).join('');
-    panel='<div class="acct-panel">'+rows+
-      '<div class="acct-new"><input class="acct-input" type="text" placeholder="Neues Konto…" value="'+h(accountDraft)+'" oninput="setDraft(this.value)" onkeydown="if(event.key===\'Enter\')submitAccount()" maxlength="24">'+
-      '<button class="acct-add" onclick="submitAccount()">＋</button></div></div>';
+    // --- Auth / sync block ---
+    var authBlock;
+    if(sbUser){
+      authBlock='<div class="auth-block signed"><div class="auth-email">☁ '+h(sbUser.email)+'</div>'+
+        '<div class="auth-sub">'+(syncLabel()||'Fortschritt wird synchronisiert')+'</div>'+
+        '<button class="auth-signout" onclick="signOut()">Abmelden</button></div>';
+    } else if(!sb){
+      authBlock='<div class="auth-block"><div class="auth-sub">Sync nicht verfügbar (offline).</div></div>';
+    } else {
+      var tabs='<div class="auth-tabs">'+
+        '<button class="'+(authMode==='login'?'on':'')+'" onclick="setAuthMode(\'login\')">Anmelden</button>'+
+        '<button class="'+(authMode==='signup'?'on':'')+'" onclick="setAuthMode(\'signup\')">Registrieren</button></div>';
+      var err=authError?'<div class="auth-err">'+h(authError)+'</div>':'';
+      var btnLabel=authBusy?'…':(authMode==='login'?'Einloggen':'Konto erstellen');
+      var action=authMode==='login'?'signIn()':'signUp()';
+      authBlock='<div class="auth-block">'+tabs+
+        '<input class="auth-input" type="email" placeholder="E-Mail" value="'+h(authEmail)+'" oninput="setAuthEmail(this.value)" autocomplete="email">'+
+        '<input class="auth-input" type="password" placeholder="Passwort" value="'+h(authPass)+'" oninput="setAuthPass(this.value)" onkeydown="if(event.key===\'Enter\')'+action+'" autocomplete="current-password">'+
+        err+
+        '<button class="auth-go" '+(authBusy?'disabled':'')+' onclick="'+action+'">'+btnLabel+'</button>'+
+        '<div class="auth-hint">Anmelden speichert deinen Fortschritt geräteübergreifend. Ohne Konto läuft alles lokal weiter.</div>'+
+        '</div>';
+    }
+    panel='<div class="acct-panel">'+
+      '<div class="acct-section-label">Lokale Profile</div>'+rows+
+      '<div class="acct-new"><input class="acct-input" type="text" placeholder="Neues Profil…" value="'+h(accountDraft)+'" oninput="setDraft(this.value)" onkeydown="if(event.key===\'Enter\')submitAccount()" maxlength="24">'+
+      '<button class="acct-add" onclick="submitAccount()">＋</button></div>'+
+      '<div class="acct-section-label">Konto &amp; Sync</div>'+authBlock+
+      '</div>';
   }
+  var pillName=sbUser?sbUser.email.split('@')[0]:cur.name;
+  var cloud=sbUser?'<span class="acct-cloud">☁</span>':'';
   return '<div class="acct-corner">'+
     '<button class="acct-pill'+(showAccounts?' open':'')+'" onclick="toggleAccounts()" aria-expanded="'+showAccounts+'">'+
-      '<span class="acct-ico">👤</span><span class="acct-cur-name">'+h(cur.name)+'</span>'+
+      '<span class="acct-ico">👤</span>'+cloud+'<span class="acct-cur-name">'+h(pillName)+'</span>'+
       '<span class="acct-caret">'+(showAccounts?'▲':'▼')+'</span></button>'+
     panel+'</div>';
 }
@@ -1177,6 +1317,8 @@ function renderResult(){
 window.startQuiz=startQuiz;window.answer=answer;window.next=next;window.home=home;window.toggleTrans=toggleTrans;window.resetMastery=resetMastery;
 window.switchProfile=switchProfile;window.deleteProfile=deleteProfile;window.createProfile=createProfile;
 window.toggleAccounts=toggleAccounts;window.submitAccount=submitAccount;window.setDraft=setDraft;
+window.toggleAuth=toggleAuth;window.setAuthMode=setAuthMode;window.setAuthEmail=setAuthEmail;window.setAuthPass=setAuthPass;
+window.signIn=signIn;window.signUp=signUp;window.signOut=signOut;
 
 function toggleAccounts(){ showAccounts=!showAccounts; render(); }
 function setDraft(v){ accountDraft=v; }
@@ -1201,6 +1343,7 @@ document.addEventListener('keydown',function(e){
 
 loadProfiles();
 render();
+initAuth(function(){ render(); });
 
 </script>
 </body>
