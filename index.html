@@ -219,9 +219,15 @@ h1{font-size:clamp(1.7rem,5vw,2.3rem);font-weight:600;color:var(--ink);letter-sp
 .progress-label{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.62rem;font-weight:600;letter-spacing:.18em;color:var(--muted);text-transform:uppercase}
 .reset-link{background:none;border:none;font-family:"Helvetica Neue",Arial,sans-serif;font-size:.66rem;color:var(--muted-2);cursor:pointer;text-decoration:underline;padding:0}
 .reset-link:hover{color:var(--red)}
-.progress-bar{height:6px;background:var(--paper-2);border-radius:3px;overflow:hidden;margin-bottom:.5rem}
-.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold-deep),var(--gold));transition:width .5s ease}
-.progress-stats{display:flex;justify-content:space-between;font-family:"Helvetica Neue",Arial,sans-serif;font-size:.72rem;color:var(--muted)}
+.progress-bar{position:relative;height:6px;background:var(--paper-2);border-radius:3px;overflow:hidden;margin-bottom:.5rem}
+/* seen sits behind mastered: every mastered question has also been seen */
+.progress-seen{position:absolute;left:0;top:0;bottom:0;background:rgba(200,169,78,.42);transition:width .5s ease}
+.progress-fill{position:relative;z-index:1;height:100%;background:linear-gradient(90deg,var(--gold-deep),var(--gold));transition:width .5s ease}
+.progress-stats{display:flex;justify-content:space-between;gap:.75rem;font-family:"Helvetica Neue",Arial,sans-serif;font-size:.72rem;color:var(--muted)}
+.progress-stats span{display:inline-flex;align-items:center;gap:.4rem;min-width:0}
+.sw{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.sw-m{background:var(--gold-deep)}
+.sw-s{background:rgba(200,169,78,.42)}
 .progress-stats b{color:var(--ink);font-weight:700}
 .kbd-hint{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.68rem;color:var(--muted-2);text-align:center;margin-top:1rem;letter-spacing:.02em}
 .kbd-hint kbd{display:inline-block;font-family:inherit;font-size:.66rem;font-weight:600;background:#fff;border:1px solid var(--line-strong);border-bottom-width:2px;border-radius:3px;padding:.05rem .3rem;color:var(--ink);margin:0 .05rem}
@@ -1618,10 +1624,13 @@ function renderHome(){
   var progHtml='';
   if(ms.seen>0){
     var mpct=Math.round(ms.mastered/ms.total*100);
+    var spct=Math.round(ms.seen/ms.total*100);
     progHtml='<div class="progress-panel"><div class="progress-head"><span class="progress-label">Ihr Fortschritt</span>'+
       '<button class="reset-link" onclick="resetMastery()">zurücksetzen</button></div>'+
-      '<div class="progress-bar"><div class="progress-fill" style="width:'+mpct+'%"></div></div>'+
-      '<div class="progress-stats"><span><b>'+ms.mastered+'</b> von '+ms.total+' gemeistert</span><span>'+ms.seen+' gesehen</span></div></div>';
+      '<div class="progress-bar"><div class="progress-seen" style="width:'+spct+'%"></div>'+
+      '<div class="progress-fill" style="width:'+mpct+'%"></div></div>'+
+      '<div class="progress-stats"><span><i class="sw sw-m"></i><b>'+ms.mastered+'</b> von '+ms.total+' gemeistert</span>'+
+      '<span><i class="sw sw-s"></i>'+ms.seen+' gesehen</span></div></div>';
   }
   var landOpts=LANDS.map(function(L){
     return '<option value="'+L.c+'"'+(L.c===currentLand()?' selected':'')+'>'+h(L.n)+'</option>';
