@@ -1,7 +1,7 @@
 // Offline support. Precaches the app and every official image so the whole
 // test works underground. The Supabase client is loaded from a CDN and is
 // deliberately not cached: sync simply no-ops when it cannot be reached.
-var CACHE = 'ebt-521d73c82de8';
+var CACHE = 'ebt-0040a723010c';
 var ASSETS = [
   "./",
   "index.html",
@@ -49,7 +49,8 @@ var ASSETS = [
   "img/441.png",
   "img/448.png",
   "img/451.png",
-  "img/458.png"
+  "img/458.png",
+  "img/55.jpg"
 ];
 
 self.addEventListener('install', function (e) {
