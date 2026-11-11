@@ -1,10 +1,13 @@
 // Offline support. Precaches the app and every official image so the whole
 // test works underground. The Supabase client is loaded from a CDN and is
 // deliberately not cached: sync simply no-ops when it cannot be reached.
-var CACHE = 'ebt-0040a723010c';
+// The tutor's API is another origin, so it is never cached either; the
+// tutor says it is offline instead.
+var CACHE = 'ebt-d9017403c353';
 var ASSETS = [
   "./",
   "index.html",
+  "guide-ai.js",
   "manifest.webmanifest",
   "icon-192.png",
   "icon-512.png",
