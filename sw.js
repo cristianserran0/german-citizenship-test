@@ -3,7 +3,7 @@
 // deliberately not cached: sync simply no-ops when it cannot be reached.
 // The tutor's API is another origin, so it is never cached either; the
 // tutor says it is offline instead.
-var CACHE = 'ebt-d9017403c353';
+var CACHE = 'ebt-d5b905918427';
 var ASSETS = [
   "./",
   "index.html",

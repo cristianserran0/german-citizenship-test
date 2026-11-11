@@ -35,6 +35,10 @@ Everything is global-scope vanilla JS driven by a single mutable `state` object 
 - `sw.js` precaches `guide-ai.js`: bump `CACHE` when it changes.
 - **Current politics**: the model's knowledge ends in 2023. `CURRENT` in `index.html` (next to the questions) holds dated facts, the time-sensitive question ids (72, 73, 213, 236) and two patterns. Questions about polls, predictions or news (`block`) are refused in the browser and the Worker, so they never reach the model. Questions about who holds office or the current line-up (`asks`), and "Erklären" on a time-sensitive question, get the facts in the prompt and a dated note under the answer. Keep it current with the `/check-catalogue` skill (`.claude/skills/check-catalogue/`), which also checks bamf.de for a newer catalogue. Official answers are never changed from the news: in the test, BAMF's answer counts.
 
+## What's new
+
+`NEWS` in `index.html` shows a modal once per release to returning users (any saved progress), on the start screen only. To announce a release, change `NEWS.v` and its items (DE/EN). The seen version is stored in `localStorage` (`ebt_news_seen`). Keep it to two items or fewer.
+
 ## Conventions
 
 - ES5-style vanilla JS (`var`, `function`) throughout — match it; there is no transpilation.

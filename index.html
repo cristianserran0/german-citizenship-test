@@ -59,14 +59,14 @@ h1{font-size:clamp(1.7rem,5vw,2.3rem);font-weight:600;color:var(--ink);letter-sp
 
 /* Bundesland picker */
 .land-row{display:flex;align-items:center;justify-content:space-between;gap:.75rem;background:var(--surface-2);border:1px solid var(--line);border-radius:3px;padding:.7rem .85rem;margin-bottom:.6rem}
-.land-lbl{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.62rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);flex-shrink:0}
+.land-lbl{position:relative;font-family:"Helvetica Neue",Arial,sans-serif;font-size:.62rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);flex-shrink:0}
 .land-sel{flex:1;min-width:0;max-width:62%;border:1px solid var(--line-strong);border-radius:3px;background:var(--surface);color:var(--ink);font-family:"Helvetica Neue",Arial,sans-serif;font-size:.82rem;padding:.4rem .5rem}
 .land-sel:focus{outline:none;border-color:var(--ink)}
 /* "?" next to a label: the explanation on hover, focus or tap */
-.tip{position:relative;display:inline-block;margin-left:.4rem;vertical-align:middle}
+.tip{display:inline-block;margin-left:.4rem;vertical-align:middle}
 .tip-btn{width:16px;height:16px;border-radius:50%;border:1px solid var(--line-strong);background:transparent;color:var(--muted);font-family:inherit;font-size:.6rem;font-weight:700;line-height:1;letter-spacing:0;cursor:help;padding:0}
 .tip-btn:hover,.tip-btn:focus{border-color:var(--ink);color:var(--ink)}
-.tip-text{position:absolute;left:-.5rem;top:calc(100% + 8px);z-index:5;width:max-content;max-width:240px;background:var(--ink);color:var(--paper);font-size:.74rem;font-weight:400;letter-spacing:0;text-transform:none;line-height:1.45;padding:.5rem .65rem;border-radius:3px;box-shadow:0 4px 14px rgba(0,0,0,.18);opacity:0;visibility:hidden;transition:opacity .12s}
+.tip-text{position:absolute;left:0;top:calc(100% + 8px);z-index:5;width:max-content;max-width:min(240px,calc(100vw - 3rem));background:var(--ink);color:var(--paper);font-size:.74rem;font-weight:400;letter-spacing:0;text-transform:none;line-height:1.45;padding:.5rem .65rem;border-radius:3px;box-shadow:0 4px 14px rgba(0,0,0,.18);opacity:0;visibility:hidden;transition:opacity .12s}
 .tip:hover .tip-text,.tip-btn:focus+.tip-text{opacity:1;visibility:visible}
 .land-hint{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.72rem;line-height:1.5;color:var(--muted-2);margin:0 .1rem 1.25rem}
 .mode-btn.land{border-color:var(--gold-deep)}
@@ -223,13 +223,16 @@ h1{font-size:clamp(1.7rem,5vw,2.3rem);font-weight:600;color:var(--ink);letter-sp
 .acct-add{border:none;background:var(--ink);color:var(--paper);border-radius:3px;width:32px;font-size:1rem;font-weight:600;cursor:pointer;flex-shrink:0}
 .acct-add:hover{background:var(--red)}
 .acct-cloud{font-size:.7rem;color:var(--gold-deep);margin-left:-.2rem}
+.acct-row-btn{display:flex;align-items:center;gap:.55rem;width:100%;background:none;border:none;border-top:1px solid var(--line);padding:.65rem .8rem;font-family:"Helvetica Neue",Arial,sans-serif;font-size:.78rem;color:var(--ink);text-align:left;cursor:pointer}
+.acct-row-btn:hover{background:var(--paper-2)}
+.acct-row-btn svg{flex-shrink:0;color:var(--gold-deep)}
+.acct-row-btn.out svg{color:var(--muted)}
+.acct-row-btn.out:hover{color:var(--red)}.acct-row-btn.out:hover svg{color:var(--red)}
 .acct-section-label{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.58rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted-2);padding:.6rem .8rem .3rem}
 .auth-block{padding:.4rem .8rem .8rem}
 .auth-block.signed{padding:.6rem .8rem .8rem}
 .auth-email{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.82rem;font-weight:600;color:var(--ink);word-break:break-all}
 .auth-sub{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.68rem;color:var(--gold-deep);margin-top:.2rem}
-.auth-signout{margin-top:.6rem;width:100%;border:1px solid var(--line-strong);background:transparent;color:var(--ink);border-radius:3px;padding:.45rem;font-family:"Helvetica Neue",Arial,sans-serif;font-size:.78rem;font-weight:600;cursor:pointer}
-.auth-signout:hover{border-color:var(--red);color:var(--red)}
 .auth-tabs{display:flex;gap:.3rem;margin-bottom:.5rem}
 .auth-tabs button{flex:1;border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:3px;padding:.35rem;font-family:"Helvetica Neue",Arial,sans-serif;font-size:.72rem;font-weight:600;cursor:pointer}
 .auth-tabs button.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
@@ -270,6 +273,24 @@ h1{font-size:clamp(1.7rem,5vw,2.3rem);font-weight:600;color:var(--ink);letter-sp
 .review-more{margin-top:1rem}
 .review-more summary{cursor:pointer;font-family:"Helvetica Neue",Arial,sans-serif;font-size:.62rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:.9rem}
 .big-score.neutral{color:var(--ink)}
+
+/* What's new: once per release, returning users, start screen only */
+#news{margin:auto;width:min(440px,calc(100% - 2rem));border:1px solid var(--line-strong);border-radius:3px;background:var(--paper);color:var(--ink);padding:1.6rem 1.5rem 1.25rem;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+#news::backdrop{background:rgba(20,20,15,.45)}
+#news[open]{animation:newsIn .28s cubic-bezier(.2,.8,.2,1)}
+#news[open]::backdrop{animation:fadeBackdrop .28s ease}
+@keyframes newsIn{from{opacity:0;transform:translateY(10px) scale(.98)}}
+@keyframes fadeBackdrop{from{opacity:0}}
+.news-x{position:absolute;top:.7rem;right:.7rem;background:none;border:none;color:var(--muted);font-size:1rem;line-height:1;cursor:pointer;padding:.3rem .4rem;border-radius:3px}
+.news-x:hover{color:var(--ink);background:var(--paper-2)}
+.news-eyebrow{font-family:"Helvetica Neue",Arial,sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--gold-deep);margin-bottom:.4rem}
+#news h2{font-size:1.35rem;font-weight:600;letter-spacing:-.01em;margin-bottom:1.1rem;outline:none}
+.news-item{display:flex;gap:.8rem;margin-bottom:1rem}
+.news-ico{flex-shrink:0;width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--paper);display:flex;align-items:center;justify-content:center;font-family:"Helvetica Neue",Arial,sans-serif;font-size:.75rem;font-weight:700}
+.news-ico.gold{background:var(--gold-deep)}
+.news-t{font-weight:600;font-size:.98rem;margin-bottom:.15rem}
+.news-d{font-size:.88rem;line-height:1.5;color:var(--charcoal)}
+#news .act-btn{margin:.4rem 0 0}
 
 /* Start screen: practice vs. the exam */
 .exam{border:1px solid var(--ink);border-radius:3px;background:var(--surface);padding:1.3rem 1.35rem 1.1rem;margin:1.5rem 0 2.25rem}
@@ -316,7 +337,9 @@ h1{font-size:clamp(1.7rem,5vw,2.3rem);font-weight:600;color:var(--ink);letter-sp
 .tutor-btn:hover,.tutor-btn[aria-expanded="true"]{border-color:var(--gold-deep);background:var(--surface)}
 .tutor-btn i{font-style:normal;color:var(--gold-deep);margin-right:.3rem}
 #tutor{position:fixed;z-index:20;top:0;right:0;bottom:0;width:min(400px,100%);display:flex;flex-direction:column;background:var(--paper);border-left:1px solid var(--line-strong);box-shadow:-8px 0 30px rgba(26,26,26,.1);font-family:"Helvetica Neue",Arial,sans-serif;color:var(--ink)}
-#tutor[hidden]{display:none}
+/* Slides in; hidden (and out of the tab order) only once it has slid out. */
+#tutor{--slide:.3s cubic-bezier(.2,.8,.2,1);transform:translateX(100%);visibility:hidden;transition:transform var(--slide),visibility 0s linear .3s}
+#tutor.open{transform:none;visibility:visible;transition:transform var(--slide),visibility 0s}
 .explain-btn{display:inline-flex;align-items:center;gap:.35rem;background:none;border:1px solid var(--line-strong);border-radius:999px;font-family:"Helvetica Neue",Arial,sans-serif;font-size:.7rem;font-weight:600;letter-spacing:.06em;color:var(--ink);cursor:pointer;padding:.4rem .8rem;margin:-.25rem 0 .9rem}
 .explain-btn i{font-style:normal;color:var(--gold-deep)}
 .explain-btn:hover{border-color:var(--gold-deep);background:var(--surface)}
@@ -327,11 +350,12 @@ h1{font-size:clamp(1.7rem,5vw,2.3rem);font-weight:600;color:var(--ink);letter-sp
 .tutor-starter:hover{border-color:var(--gold-deep)}
 /* Phones: a bottom sheet, so the question stays visible above it. */
 @media (max-width:640px){
-  #tutor{top:auto;width:100%;height:62vh;height:62dvh;border-left:none;border-top:1px solid var(--line-strong);border-radius:12px 12px 0 0;box-shadow:0 -8px 30px rgba(26,26,26,.14)}
+  #tutor{transform:translateY(100%);top:auto;width:100%;height:62vh;height:62dvh;border-left:none;border-top:1px solid var(--line-strong);border-radius:12px 12px 0 0;box-shadow:0 -8px 30px rgba(26,26,26,.14)}
+  #tutor.open{transform:none}
   html.tutor-open body{padding-bottom:62vh}
 }
 /* Wide enough for both: the page re-centres in the space left of the panel. */
-@media (min-width:1080px){html.tutor-open body{padding-right:400px}}
+@media (min-width:1080px){body{transition:padding-right .3s cubic-bezier(.2,.8,.2,1)}html.tutor-open body{padding-right:400px}}
 @media (prefers-color-scheme:dark){#tutor{box-shadow:-8px 0 30px rgba(0,0,0,.5)}}
 .tutor-head{display:flex;align-items:center;gap:.6rem;padding:.9rem 1rem .8rem;border-bottom:1px solid var(--line)}
 .tutor-title{font-size:.66rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase}
@@ -384,7 +408,8 @@ h1{font-size:clamp(1.7rem,5vw,2.3rem);font-weight:600;color:var(--ink);letter-sp
   <div id="app"></div>
   <div class="spacer"></div>
 </div>
-<aside id="tutor" hidden aria-labelledby="tutor-title">
+<dialog id="news" aria-labelledby="news-title" onclick="if(event.target===this)closeNews()" onclose="newsSeen()"></dialog>
+<aside id="tutor" aria-labelledby="tutor-title">
   <div class="tutor-head">
     <span class="tutor-title" id="tutor-title"><i>✦</i>Tutor</span>
     <span class="tutor-here" id="tutor-here"></span>
@@ -1743,6 +1768,9 @@ function renderToggle(){
   '</div>';
 }
 
+// Menu icons: line drawings in the text colour, like the rest of the UI.
+var ICON_GIFT='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5C10 3 12 8 12 8s2-5 4.5-5a2.5 2.5 0 0 1 0 5"/></svg>';
+var ICON_OUT='<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg>';
 function renderAccountBar(){
   var cur=currentProfile();
   var list=profileList();
@@ -1759,7 +1787,7 @@ function renderAccountBar(){
     if(sbUser){
       authBlock='<div class="auth-block signed"><div class="auth-email">☁ '+h(sbUser.email)+'</div>'+
         '<div class="auth-sub">'+(syncLabel()||'Fortschritt wird synchronisiert')+'</div>'+
-        '<button class="auth-signout" onclick="signOut()">Abmelden</button></div>';
+        '</div>';
     } else if(!sb){
       authBlock='<div class="auth-block"><div class="auth-sub">Sync nicht verfügbar (offline).</div></div>';
     } else {
@@ -1782,6 +1810,8 @@ function renderAccountBar(){
       '<div class="acct-new"><input class="acct-input" type="text" placeholder="Neues Profil…" value="'+h(accountDraft)+'" oninput="setDraft(this.value)" onkeydown="if(event.key===\'Enter\')submitAccount()" maxlength="24">'+
       '<button class="acct-add" onclick="submitAccount()">＋</button></div>'+
       '<div class="acct-section-label">Konto &amp; Sync</div>'+authBlock+
+      '<button class="acct-row-btn" onclick="openNews()">'+ICON_GIFT+T('Was ist neu','What’s new')+'</button>'+
+      (sbUser?'<button class="acct-row-btn out" onclick="signOut()">'+ICON_OUT+T('Abmelden','Sign out')+'</button>':'')+
       '</div>';
   }
   var pillName=sbUser?sbUser.email.split('@')[0]:cur.name;
@@ -2138,7 +2168,7 @@ function tutorSync(){
   if(!panel)return;
   if(state.screen!=='result')tutorFocus=null;
   if(tutorOpen&&!tutorAvailable()){ tutorOpen=false; if(tutorTurn)tutorTurn.stop(); }
-  panel.hidden=!tutorOpen;
+  panel.classList.toggle('open',tutorOpen);
   document.documentElement.classList.toggle('tutor-open',tutorOpen);
   document.querySelectorAll('.tutor-btn').forEach(function(b){ b.setAttribute('aria-expanded',String(tutorOpen)); });
   if(!tutorOpen)return;
@@ -2299,8 +2329,59 @@ document.addEventListener('keydown',function(e){
   }
 });
 
+// ===== What's new =====
+// Once per release, to returning users only (new ones find it all new
+// anyway), on the start screen. To announce a release: change NEWS.v and
+// the items. Seen versions are remembered in this browser.
+var NEWS={
+  v:'2026-11',
+  items:[
+    {ico:'✦',gold:true,
+     t:['Tutor','Tutor'],
+     d:['Erklärt Fragen und Antworten. Tippen Sie nach einer Antwort auf „Erklären“ oder fragen Sie ihn oben über „Tutor“.',
+        'Explains questions and answers. Tap “Erklären” after answering, or ask it via “Tutor” at the top.']},
+    {ico:'33',
+     t:['Prüfungssimulation wie im echten Test','Exam simulation like the real test'],
+     d:['Keine Lösungen während des Tests. Sie können Fragen überspringen und Antworten ändern; das Ergebnis kommt nach der Abgabe.',
+        'No answers shown during the test. Skip questions and change answers; you get the result once you hand in.']}
+  ]
+};
+var NKEY='ebt_news_seen';
+function newsSeen(){ try{ localStorage.setItem(NKEY,NEWS.v); }catch(e){} }
+function closeNews(){ var d=document.getElementById('news'); if(d&&d.open)d.close(); }
+function returningUser(){
+  return Object.keys(pdata.profiles).some(function(k){
+    var p=pdata.profiles[k]; return Object.keys(p.mastery||{}).length>0||(p.attempts||[]).length>0;
+  });
+}
+function maybeShowNews(){
+  var d=document.getElementById('news'), seen=null;
+  try{ seen=localStorage.getItem(NKEY); }catch(e){}
+  if(!d||seen===NEWS.v||state.screen!=='home')return;
+  if(!returningUser()){ newsSeen(); return; }   // first visit: nothing to compare with
+  openNews();
+}
+// Also from the top-right menu, any time.
+function openNews(){
+  var d=document.getElementById('news');
+  if(!d||!d.showModal||d.open)return;             // very old browser: skip quietly
+  if(showAccounts){ showAccounts=false; renderAccounts(); }
+  var L=showTrans?1:0;
+  d.innerHTML='<button class="news-x" onclick="closeNews()" aria-label="'+T('Schließen','Close')+'">✕</button>'+
+    '<div class="news-eyebrow">'+T('Neu','New')+'</div>'+
+    '<h2 id="news-title" tabindex="-1" autofocus>'+T('Was sich geändert hat','What’s changed')+'</h2>'+
+    NEWS.items.map(function(it){
+      return '<div class="news-item"><span class="news-ico'+(it.gold?' gold':'')+'">'+h(it.ico)+'</span>'+
+        '<div><div class="news-t">'+h(it.t[L])+'</div><div class="news-d">'+h(it.d[L])+'</div></div></div>';
+    }).join('')+
+    '<button class="act-btn" onclick="closeNews()">'+T('Verstanden','Got it')+'</button>';
+  d.showModal();
+}
+window.closeNews=closeNews;window.newsSeen=newsSeen;window.openNews=openNews;
+
 loadProfiles();
 render();
+maybeShowNews();
 
 // Offline support; harmless where service workers are unavailable.
 if('serviceWorker' in navigator){
