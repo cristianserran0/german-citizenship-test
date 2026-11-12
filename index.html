@@ -165,9 +165,10 @@ h1{font-size:clamp(1.7rem,5vw,2.3rem);font-weight:600;color:var(--ink);letter-sp
 .opt.correct .opt-en{color:var(--green)}.opt.wrong .opt-en{color:var(--red)}
 
 /* Feedback */
-.feedback{padding:.9rem 1.1rem;border-radius:3px;margin-bottom:1rem;font-size:.9rem;font-weight:500;line-height:1.5}
-.feedback.ok{background:var(--green-bg);border:1px solid var(--green);color:var(--green)}
-.feedback.fail{background:var(--red-bg);border:1px solid var(--red);color:var(--red)}
+.opt-tag{margin-left:auto;flex-shrink:0;align-self:center;font-family:"Helvetica Neue",Arial,sans-serif;font-size:.66rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;border:1px solid currentColor;border-radius:999px;padding:.18rem .55rem}
+.opts-img .opt-tag{margin-left:0}
+.after{margin-top:.45rem}
+.opts-img+.after{margin-top:1rem}
 
 /* Primary action button */
 .act-btn{width:100%;padding:.95rem 1.5rem;border:none;border-radius:3px;background:var(--ink);color:var(--paper);font-family:"Helvetica Neue",Arial,sans-serif;font-size:.82rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;transition:all .16s;margin-bottom:.55rem}
@@ -1733,6 +1734,12 @@ function render(keepScroll){
   if(state.screen==='home')app.innerHTML=renderHome();
   else if(state.screen==='quiz')app.innerHTML=renderQuiz();
   else app.innerHTML=renderResult();
+  // An in-place update (picking an answer) must not replay the screen's
+  // entrance animation, or the whole page flashes.
+  if(keepScroll){
+    var fd=app.querySelectorAll('.fade');
+    for(var fi=0;fi<fd.length;fi++)fd[fi].classList.remove('fade');
+  }
   var hdr=document.getElementById('hdr');
   if(hdr)hdr.className=state.screen==='home'?'header':'header compact';
   renderAccounts();
@@ -1972,20 +1979,23 @@ function renderQuiz(){
   var isImg=!!q.im;
   var opts=q.o.map(function(opt,i){
     var cls='opt';
-    if(state.answered){if(i===q.a)cls+=' correct';else if(i===state.sel)cls+=' wrong';}
+    var tag='';
+    if(state.answered){
+      if(i===q.a){cls+=' correct';tag='<span class="opt-tag">✓ Richtig</span>';}
+      else if(i===state.sel){cls+=' wrong';tag='<span class="opt-tag">✗ Falsch</span>';}
+    }
     var enSpan=showTrans?'<span class="opt-en">'+h(tr.ot[i]||'')+'</span>':'';
     var body=isImg?'<span class="opt-img"><img src="'+h(q.im[i])+'" alt="Bild '+(i+1)+'" loading="lazy"></span>'
                   :'<span><span>'+h(opt)+'</span>'+enSpan+'</span>';
     return '<button class="'+cls+'"'+(state.answered?' disabled':'')+' onclick="answer('+i+')">'+
-      '<span class="opt-letter">'+String.fromCharCode(65+i)+'</span>'+body+'</button>';
+      '<span class="opt-letter">'+String.fromCharCode(65+i)+'</span>'+body+tag+'</button>';
   }).join('');
   var fb='';
   if(state.answered){
-    var ok=state.sel===q.a;
     var nl=state.mode==='infinite'?(state.rem.length===0?'Runde abschließen →':'Nächste Frage →'):(state.cur+1>=state.questions.length?'Ergebnis anzeigen →':'Nächste Frage →');
-    fb='<div class="feedback '+(ok?'ok':'fail')+'">'+(ok?'✓ Richtig':'✗ Falsch — richtig ist: '+h(q.o[q.a]))+'</div>'+
+    fb='<div class="after">'+
        (tutorAvailable()?'<button class="explain-btn" onclick="tutorExplain()"><i>✦</i>Erklären</button>':'')+
-       '<button class="act-btn" onclick="next()">'+nl+'</button>';
+       '<button class="act-btn" onclick="next()">'+nl+'</button></div>';
   }
   var first=!state.answered&&state.results.length===0&&!state.totalDone&&state.round===1;
   var hint=!first?'':'<div class="kbd-hint">Tipp: Tasten <kbd>A</kbd>–<kbd>D</kbd> oder <kbd>1</kbd>–<kbd>4</kbd> zum Antworten</div>';
@@ -2062,6 +2072,18 @@ function renderAccounts(){
   ab.innerHTML=hide?'':renderAccountBar();
 }
 function toggleAccounts(){ showAccounts=!showAccounts; renderAccounts(); }
+// Close the menu on a click outside it or on Escape. Capture phase: a click
+// inside the menu re-renders it, which would detach the target before a
+// bubbling listener could tell where it came from.
+document.addEventListener('click',function(e){
+  if(!showAccounts)return;
+  var ab=document.getElementById('acctbar');
+  if(ab&&ab.contains(e.target))return;
+  showAccounts=false; renderAccounts();
+},true);
+document.addEventListener('keydown',function(e){
+  if(showAccounts&&e.key==='Escape'){ showAccounts=false; renderAccounts(); }
+});
 function setDraft(v){ accountDraft=v; }
 function submitAccount(){ createProfile(accountDraft); render(); }
 
