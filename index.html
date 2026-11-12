@@ -276,10 +276,16 @@ h1{font-size:clamp(1.7rem,5vw,2.3rem);font-weight:600;color:var(--ink);letter-sp
 .big-score.neutral{color:var(--ink)}
 
 /* What's new: once per release, returning users, start screen only */
-#news{margin:auto;width:min(440px,calc(100% - 2rem));border:1px solid var(--line-strong);border-radius:3px;background:var(--paper);color:var(--ink);padding:1.6rem 1.5rem 1.25rem;box-shadow:0 20px 60px rgba(0,0,0,.25)}
-#news::backdrop{background:rgba(20,20,15,.45)}
-#news[open]{animation:newsIn .28s cubic-bezier(.2,.8,.2,1)}
-#news[open]::backdrop{animation:fadeBackdrop .28s ease}
+#news,#ask{margin:auto;width:min(440px,calc(100% - 2rem));border:1px solid var(--line-strong);border-radius:3px;background:var(--paper);color:var(--ink);padding:1.6rem 1.5rem 1.25rem;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+#news::backdrop,#ask::backdrop{background:rgba(20,20,15,.45)}
+#news[open],#ask[open]{animation:newsIn .28s cubic-bezier(.2,.8,.2,1)}
+#news[open]::backdrop,#ask[open]::backdrop{animation:fadeBackdrop .28s ease}
+#ask{width:min(400px,calc(100% - 2rem))}
+#ask h2{font-size:1.25rem;font-weight:600;letter-spacing:-.01em;margin-bottom:.5rem;outline:none}
+.ask-d{font-size:.92rem;line-height:1.55;color:var(--charcoal);margin-bottom:1.2rem}
+.ask-btns{display:flex;gap:.55rem}
+.ask-btns .act-btn{margin:0;flex:1;padding-left:.8rem;padding-right:.8rem}
+.act-btn.danger{background:var(--red)}
 @keyframes newsIn{from{opacity:0;transform:translateY(10px) scale(.98)}}
 @keyframes fadeBackdrop{from{opacity:0}}
 .news-x{position:absolute;top:.7rem;right:.7rem;background:none;border:none;color:var(--muted);font-size:1rem;line-height:1;cursor:pointer;padding:.3rem .4rem;border-radius:3px}
@@ -410,6 +416,7 @@ h1{font-size:clamp(1.7rem,5vw,2.3rem);font-weight:600;color:var(--ink);letter-sp
   <div class="spacer"></div>
 </div>
 <dialog id="news" aria-labelledby="news-title" onclick="if(event.target===this)closeNews()" onclose="newsSeen()"></dialog>
+<dialog id="ask" aria-labelledby="ask-title" onclick="if(event.target===this)closeAsk()"></dialog>
 <aside id="tutor" aria-labelledby="tutor-title">
   <div class="tutor-head">
     <span class="tutor-title" id="tutor-title"><i>✦</i>Tutor</span>
@@ -1572,8 +1579,9 @@ function masteryStats(){
   return {seen:seen,mastered:mastered,total:pool.length};
 }
 function resetMastery(){
-  if(!confirm('Fortschritt wirklich zurücksetzen? Alle Statistiken dieses Profils gehen verloren.'))return;
-  currentProfile().mastery={}; saveProfiles(); render();
+  ask({title:'Fortschritt zurücksetzen?',text:'Alle Statistiken dieses Profils gehen verloren.',ok:'Zurücksetzen',danger:true},function(){
+    currentProfile().mastery={}; saveProfiles(); render();
+  });
 }
 
 // ===== Attempt history =====
@@ -1708,8 +1716,13 @@ function simGo(n){
   state.cur=n; state.sel=state.answers[n]; render();
 }
 function submitSim(timedOut){
+  if(timedOut){ closeAsk(); finishSim(); return; }
   var open=state.questions.length-simAnswered();
-  if(!timedOut&&!confirm(open?'Test abgeben? '+open+' Frage'+(open===1?' ist':'n sind')+' noch unbeantwortet und zählen als falsch.':'Test abgeben?'))return;
+  ask({title:'Test abgeben?',
+       text:open?open+' Frage'+(open===1?' ist':'n sind')+' noch unbeantwortet und '+(open===1?'zählt':'zählen')+' als falsch.':'Danach kannst du keine Antwort mehr ändern.',
+       ok:'Abgeben'},finishSim);
+}
+function finishSim(){
   stopTimer();
   state.score=0; state.results=[];
   state.questions.forEach(function(q,i){
@@ -1723,9 +1736,27 @@ function submitSim(timedOut){
 
 function exitQuiz(){
   var started=state.cur>0||state.answered||state.results.length>0||(state.mode==='sim'&&simAnswered()>0);
-  if(started&&!confirm('Test wirklich beenden? Das Ergebnis dieses Durchgangs wird nicht gespeichert.'))return;
-  home();
+  if(!started){ home(); return; }
+  ask({title:'Test beenden?',text:'Das Ergebnis dieses Durchgangs wird nicht gespeichert.',ok:'Beenden',cancel:'Weitermachen',danger:true},home);
 }
+
+// In-app replacement for confirm(): o={title,text,ok,cancel,danger}.
+// onOk runs only on the confirm button; Escape, the backdrop and
+// "Abbrechen" all just close it.
+var askCb=null;
+function ask(o,onOk){
+  var d=document.getElementById('ask');
+  if(!d||!d.showModal){ if(confirm(o.title+' '+o.text))onOk(); return; }   // very old browser
+  if(d.open)return;
+  askCb=onOk;
+  d.innerHTML='<h2 id="ask-title">'+h(o.title)+'</h2><p class="ask-d">'+h(o.text)+'</p>'+
+    '<div class="ask-btns"><button class="act-btn ghost" onclick="closeAsk()" autofocus>'+h(o.cancel||'Abbrechen')+'</button>'+
+    '<button class="act-btn'+(o.danger?' danger':'')+'" onclick="askOk()">'+h(o.ok)+'</button></div>';
+  d.showModal();
+}
+function askOpen(){ var d=document.getElementById('ask'); return !!(d&&d.open); }
+function closeAsk(){ var d=document.getElementById('ask'); askCb=null; if(d&&d.open)d.close(); }
+function askOk(){ var cb=askCb; closeAsk(); if(cb)cb(); }
 
 
 function render(keepScroll){
@@ -2322,6 +2353,7 @@ window.tutorSubmit=tutorSubmit;window.tutorExplain=tutorExplain;window.tutorSend
 
 // Keyboard shortcuts
 document.addEventListener('keydown',function(e){
+  if(askOpen())return;   // the dialog owns the keyboard
   if(tutorOpen&&e.key==='Escape'){e.preventDefault();closeTutor();return;}
   // Typing in the tutor (or any field) must not answer or skip questions.
   var t=e.target;
